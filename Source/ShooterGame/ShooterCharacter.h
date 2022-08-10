@@ -54,4 +54,10 @@ protected:
 
 	// Crouch Function To Set Character State To Crouch
 	void CrouchButtonPressed();
+
+	// Jump Functionality For Character
+	void CharacterJump();
+
+	// After Jump Functionality
+	void CharacterStopJump();
 };

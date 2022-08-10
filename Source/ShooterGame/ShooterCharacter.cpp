@@ -25,7 +25,7 @@ AShooterCharacter::AShooterCharacter()
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = 150.f;
-	GetCharacterMovement()->AirControl = 0.2f;
+	GetCharacterMovement()->AirControl = 0.05f;
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -55,7 +55,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &ThisClass::LookUp);
 	PlayerInputComponent->BindAxis(FName("LookRight"), this, &ThisClass::LookRight);
 
-	PlayerInputComponent->BindAction(FName("Jump"), EInputEvent::IE_Pressed, this, &ThisClass::Jump);
+	PlayerInputComponent->BindAction(FName("Jump"), EInputEvent::IE_Pressed, this, &ThisClass::CharacterJump);
 	PlayerInputComponent->BindAction(FName("Crouch"), EInputEvent::IE_Pressed, this, &ThisClass::CrouchButtonPressed);
 }
 
@@ -105,4 +105,20 @@ void AShooterCharacter::CrouchButtonPressed()
 		UnCrouch();
 		return;
 	}
+}
+
+void AShooterCharacter::CharacterJump() 
+{
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->RotationRate = FRotator(0.f);
+	Jump();
+	FTimerHandle JumpTimer;
+	GetWorldTimerManager().SetTimer(JumpTimer, this, &ThisClass::CharacterStopJump, 1.2f);
+}
+
+void AShooterCharacter::CharacterStopJump() 
+{
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
+	StopJumping();
 }
