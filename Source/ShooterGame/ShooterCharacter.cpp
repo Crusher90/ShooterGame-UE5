@@ -4,6 +4,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Weapon.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -59,6 +61,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction(FName("Crouch"), EInputEvent::IE_Pressed, this, &ThisClass::CrouchButtonPressed);
 	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Pressed, this, &ThisClass::Sprint);
 	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Released, this, &ThisClass::StopSprint);
+	PlayerInputComponent->BindAction(FName("Equip"), EInputEvent::IE_Pressed, this, &ThisClass::EquipButtonPressed);
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -127,5 +130,32 @@ void AShooterCharacter::StopSprint()
 	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	}
+}
+
+void AShooterCharacter::AttachWeaponToHands()
+{
+	Weapon->SetOwner(this);
+	const USkeletalMeshSocket *RightHandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+	if(RightHandSocket)
+	{
+		RightHandSocket->AttachActor(Weapon, GetMesh());
+	}
+	Weapon->SetWeaponState(EWeaponState::EWS_Equipped);
+}
+
+void AShooterCharacter::DropWeaponFromHands()
+{
+	FDetachmentTransformRules DetachmentRules(EDetachmentRule::KeepWorld, true);
+	Weapon->DetachFromActor(DetachmentRules);
+	Weapon->SetWeaponState(EWeaponState::EWS_Dropped);
+	Weapon->SetOwner(nullptr);
+}
+
+void AShooterCharacter::EquipButtonPressed() 
+{
+	if(CombatState == ECombatState::ECS_Unoccupied && Weapon->GetOverlappingWeapon() == true)
+	{
+		AttachWeaponToHands();
 	}
 }

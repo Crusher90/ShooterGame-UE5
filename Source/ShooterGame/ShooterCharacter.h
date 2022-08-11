@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "CombatState.h"
 #include "ShooterCharacter.generated.h"
 
 UCLASS()
@@ -35,9 +36,14 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
 	class UCameraComponent *FollowCamera;
 
+	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
+	class AWeapon *Weapon;
+
 	// Game Overall Sensitivity
 	UPROPERTY(EditAnywhere, Category = "CharacterProperties")
 	float Sensitivity = 45.f;
+
+	ECombatState CombatState = ECombatState::ECS_Unoccupied;
 
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
@@ -61,4 +67,14 @@ protected:
 	// Sprint Functionality for Character
 	void Sprint();
 	void StopSprint();
+
+	// Function Call When E Key Is Pressed
+	void EquipButtonPressed();
+
+public:
+	// Weapon Equipping Functionality
+	void AttachWeaponToHands();
+
+	// Weapon Drop Functionality
+	void DropWeaponFromHands();
 };
