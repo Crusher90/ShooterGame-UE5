@@ -57,6 +57,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 
 	PlayerInputComponent->BindAction(FName("Jump"), EInputEvent::IE_Pressed, this, &ThisClass::CharacterJump);
 	PlayerInputComponent->BindAction(FName("Crouch"), EInputEvent::IE_Pressed, this, &ThisClass::CrouchButtonPressed);
+	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Pressed, this, &ThisClass::Sprint);
+	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Released, this, &ThisClass::StopSprint);
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -93,32 +95,37 @@ void AShooterCharacter::LookRight(float Value)
 	AddControllerYawInput(Value * Sensitivity * GetWorld()->GetDeltaSeconds());
 }
 
-void AShooterCharacter::CrouchButtonPressed() 
+void AShooterCharacter::CrouchButtonPressed()
 {
-	if(!bIsCrouched)
+	if (!bIsCrouched)
 	{
 		Crouch();
 		return;
 	}
-	if(bIsCrouched)
+	if (bIsCrouched)
 	{
 		UnCrouch();
 		return;
 	}
 }
 
-void AShooterCharacter::CharacterJump() 
+void AShooterCharacter::CharacterJump()
 {
-	GetCharacterMovement()->bOrientRotationToMovement = false;
-	GetCharacterMovement()->RotationRate = FRotator(0.f);
 	Jump();
-	FTimerHandle JumpTimer;
-	GetWorldTimerManager().SetTimer(JumpTimer, this, &ThisClass::CharacterStopJump, 1.2f);
 }
 
-void AShooterCharacter::CharacterStopJump() 
+void AShooterCharacter::Sprint()
 {
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
-	StopJumping();
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
+}
+
+void AShooterCharacter::StopSprint()
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	}
 }

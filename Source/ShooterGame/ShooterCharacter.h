@@ -58,6 +58,7 @@ protected:
 	// Jump Functionality For Character
 	void CharacterJump();
 
-	// After Jump Functionality
-	void CharacterStopJump();
+	// Sprint Functionality for Character
+	void Sprint();
+	void StopSprint();
 };

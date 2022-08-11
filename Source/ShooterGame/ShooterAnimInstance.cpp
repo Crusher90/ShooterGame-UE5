@@ -1,40 +1,49 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "ShooterAnimInstance.h"
 #include "ShooterCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-
-void UShooterAnimInstance::NativeInitializeAnimation() 
+void UShooterAnimInstance::NativeInitializeAnimation()
 {
     Super::NativeInitializeAnimation();
 
     ShooterCharacter = ShooterCharacter == nullptr ? Cast<AShooterCharacter>(TryGetPawnOwner()) : ShooterCharacter;
 }
 
-void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime) 
+void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
     Super::NativeUpdateAnimation(DeltaTime);
 
     ShooterCharacter = ShooterCharacter == nullptr ? Cast<AShooterCharacter>(TryGetPawnOwner()) : ShooterCharacter;
-    if(ShooterCharacter)
+    if (ShooterCharacter)
     {
         FVector Velocity = ShooterCharacter->GetVelocity();
         Velocity.Z = 0.f;
         Speed = Velocity.Size();
 
-        if(ShooterCharacter && ShooterCharacter->GetCharacterMovement())
+        if (ShooterCharacter && ShooterCharacter->GetCharacterMovement())
         {
             bIsFalling = ShooterCharacter->GetCharacterMovement()->IsFalling();
 
-            if(ShooterCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f)
+            if (ShooterCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f)
             {
                 bIsAccelerating = true;
             }
             else
             {
                 bIsAccelerating = false;
+            }
+
+            if(bIsFalling)
+            {
+                ShooterCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+                ShooterCharacter->GetCharacterMovement()->RotationRate = FRotator(0.f);
+            }
+            else
+            {
+                ShooterCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
+                ShooterCharacter->GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
             }
         }
     }
