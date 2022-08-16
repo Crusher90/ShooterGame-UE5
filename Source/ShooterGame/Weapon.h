@@ -6,22 +6,22 @@
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
+// ENUM for current weapon state
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
-	EWS_Initial UMETA(DisplayName = "InitialState"),
 	EWS_Equipped UMETA(DisplayName = "Equipped"),
 	EWS_Dropped UMETA(DisplayName = "Dropped"),
 
-	EWS_DefaultMax UMETA(DisplayName="DefaultMax")
+	EWS_DefaultMax UMETA(DisplayName = "DefaultMax")
 };
 
 UCLASS()
 class SHOOTERGAME_API AWeapon : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
@@ -29,7 +29,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -47,22 +47,16 @@ private:
 	class UBoxComponent *WeaponBox;
 
 	// Widget Component For Pickup Weapon
-	// UPROPERTY(VisibleAnywhere, Category = "WeaponProperties")
-	// class UWidgetComponent *PickupWidget;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent *PickupWidget;
 
 	// Decalre custom enum for WeaponState like equip drop
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
 	EWeaponState WeaponState;
 
-	// bool to decide if we overlapping with any weapon
-	bool bOverlappingWeapon = false;
-
 protected:
 	// Sets the Weapon State
 	void OnWeaponStateSet();
-
-	// Sets Weapon initial State
-	void WeaponInitialState();
 
 	// Sets Weapon Equipped State
 	void WeaponEquippedState();
@@ -71,15 +65,23 @@ protected:
 	void WeaponDroppedState();
 
 	// Called When Begin Overlapping Weapon
-	virtual void OnWeaponBoxBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
+	virtual void OnWeaponBoxBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 	// Called When End Overlap With Weapon
+	UFUNCTION()
 	virtual void OnWeaponBoxEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
 
+	// Function for enabling Weapon collision after 1 sec
+	void DelayedDrop();
+
 public:
-	// Getters and Setters
+	/* ******************Getters And Setters****************** */
+
+	// Weapon State
 	FORCEINLINE EWeaponState GetWeaponState() const { return WeaponState; }
 	void SetWeaponState(EWeaponState State);
-	
-	FORCEINLINE bool GetOverlappingWeapon() const {return bOverlappingWeapon;}
+
+	// Weapon Mesh
+	FORCEINLINE USkeletalMeshComponent *GetWeaponMesh() const { return WeaponMesh; }
 };

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Weapon.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/BoxComponent.h"
@@ -11,19 +10,26 @@
 // Sets default values
 AWeapon::AWeapon()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(WeaponMesh);
+	WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	WeaponMesh->SetSimulatePhysics(false);
+	WeaponMesh->SetEnableGravity(false);
 
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponBox"));
-	WeaponMesh->SetupAttachment(GetRootComponent());
+	WeaponBox->SetupAttachment(GetRootComponent());
+	WeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	WeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
-	// PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
-	// PickupWidget->SetupAttachment(GetRootComponent());
-
-	WeaponState = EWeaponState::EWS_Initial;
+	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
+	PickupWidget->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -39,17 +45,16 @@ void AWeapon::BeginPlay()
 void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AWeapon::OnWeaponBoxBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
-	if(OtherActor)
+	if (OtherActor)
 	{
 		ShooterCharacter = ShooterCharacter == nullptr ? Cast<AShooterCharacter>(OtherActor) : ShooterCharacter;
-		if(ShooterCharacter)
+		if (ShooterCharacter)
 		{
-			bOverlappingWeapon = true;
+			ShooterCharacter->SetOverlappingWeapon(this);
 		}
 	}
 }
@@ -61,25 +66,21 @@ void AWeapon::OnWeaponBoxEndOverlap(UPrimitiveComponent *OverlappedComponent, AA
 		ShooterCharacter = ShooterCharacter == nullptr ? Cast<AShooterCharacter>(OtherActor) : ShooterCharacter;
 		if (ShooterCharacter)
 		{
-			bOverlappingWeapon = false;
+			ShooterCharacter->SetOverlappingWeapon(nullptr);
 		}
 	}
 }
 
-void AWeapon::SetWeaponState(EWeaponState State) 
+void AWeapon::SetWeaponState(EWeaponState State)
 {
-	WeaponState = State;  
+	WeaponState = State;
 	OnWeaponStateSet();
 }
 
-void AWeapon::OnWeaponStateSet() 
+void AWeapon::OnWeaponStateSet()
 {
-	switch(WeaponState)
+	switch (WeaponState)
 	{
-		case EWeaponState::EWS_Initial:
-			WeaponInitialState();
-			break;
-
 		case EWeaponState::EWS_Equipped:
 			WeaponEquippedState();
 			break;
@@ -90,44 +91,42 @@ void AWeapon::OnWeaponStateSet()
 	}
 }
 
-void AWeapon::WeaponInitialState() 
+void AWeapon::WeaponEquippedState()
 {
-	if(WeaponMesh)
-	{
-		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		WeaponMesh->SetSimulatePhysics(true);
-		WeaponMesh->SetEnableGravity(true);
-		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-	}
 	if(WeaponBox)
-	{
-		WeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	}
-}
-
-void AWeapon::WeaponEquippedState() 
-{
-	if (WeaponMesh)
-	{
-		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		WeaponMesh->SetSimulatePhysics(false);
-		WeaponMesh->SetEnableGravity(false);
-		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-	}
-	if (WeaponBox)
 	{
 		WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	if(WeaponMesh)
+	{
+		WeaponMesh->SetSimulatePhysics(false);
+		WeaponMesh->SetEnableGravity(false);
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
-void AWeapon::WeaponDroppedState() 
+void AWeapon::WeaponDroppedState()
 {
-	SetWeaponState(EWeaponState::EWS_Initial);
+	if (WeaponMesh)
+	{
+		WeaponMesh->SetSimulatePhysics(true);
+		WeaponMesh->SetEnableGravity(true);
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	}
+	FTimerHandle DelayTimer;
+	GetWorldTimerManager().SetTimer(DelayTimer, this, &ThisClass::DelayedDrop, 1.2f);
 }
 
-
+void AWeapon::DelayedDrop() 
+{
+	if(WeaponBox)
+	{
+		WeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		WeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	}
+}
 

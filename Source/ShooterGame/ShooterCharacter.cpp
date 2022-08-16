@@ -133,29 +133,56 @@ void AShooterCharacter::StopSprint()
 	}
 }
 
-void AShooterCharacter::AttachWeaponToHands()
+void AShooterCharacter::EquipButtonPressed()
 {
-	Weapon->SetOwner(this);
-	const USkeletalMeshSocket *RightHandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
-	if(RightHandSocket)
-	{
-		RightHandSocket->AttachActor(Weapon, GetMesh());
-	}
-	Weapon->SetWeaponState(EWeaponState::EWS_Equipped);
+	EquipWeapon(OverlappingWeapon);
 }
 
-void AShooterCharacter::DropWeaponFromHands()
+void AShooterCharacter::EquipWeapon(AWeapon *WeaponToEquip)
 {
-	FDetachmentTransformRules DetachmentRules(EDetachmentRule::KeepWorld, true);
-	Weapon->DetachFromActor(DetachmentRules);
-	Weapon->SetWeaponState(EWeaponState::EWS_Dropped);
-	Weapon->SetOwner(nullptr);
+	if (OverlappingWeapon == nullptr)
+		return;
+	WeaponToEquip = OverlappingWeapon;
+	if (WeaponToEquip && EquippedWeapon == nullptr)
+	{
+		AttachWeaponToHands(WeaponToEquip);
+		SetEquippedWeapon(WeaponToEquip);
+	}
+	if (OverlappingWeapon && EquippedWeapon)
+	{
+		SwapWeapons();
+	}
 }
 
-void AShooterCharacter::EquipButtonPressed() 
+void AShooterCharacter::SwapWeapons()
 {
-	if(CombatState == ECombatState::ECS_Unoccupied && Weapon->GetOverlappingWeapon() == true)
+	DropWeaponFromHands(EquippedWeapon);
+	AttachWeaponToHands(OverlappingWeapon);
+}
+
+void AShooterCharacter::AttachWeaponToHands(AWeapon *WeaponInHands)
+{
+	if (WeaponInHands)
 	{
-		AttachWeaponToHands();
+		WeaponInHands->SetWeaponState(EWeaponState::EWS_Equipped);
+		const USkeletalMeshSocket *RightHandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+		if (RightHandSocket)
+		{
+			RightHandSocket->AttachActor(WeaponInHands, GetMesh());
+		}
+		SetEquippedWeapon(WeaponInHands);
+		CombatState = ECombatState::ECS_Occupied;
 	}
+}
+
+void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
+{
+	if (WeaponToDrop)
+	{
+		WeaponToDrop->SetWeaponState(EWeaponState::EWS_Dropped);
+		FDetachmentTransformRules DetachmentRules(EDetachmentRule::KeepWorld, true);
+		WeaponToDrop->GetWeaponMesh()->DetachFromComponent(DetachmentRules);
+	}
+	SetEquippedWeapon(nullptr);
+	CombatState = ECombatState::ECS_Unoccupied;
 }
