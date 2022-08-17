@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "WeaponTypes.h"
 #include "Weapon.generated.h"
 
 // ENUM for current weapon state
@@ -50,11 +51,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent *PickupWidget;
 
-	// Decalre custom enum for WeaponState like equip drop
+	// Decalre custom enum for WeaponState
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
 	EWeaponState WeaponState;
 
+	// Decalre custom enum for WeaponTypes
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
+	EWeaponType WeaponType;
+
 protected:
+	/* ******************FUNCTIONS****************** */
 	// Sets the Weapon State
 	void OnWeaponStateSet();
 
@@ -75,12 +81,25 @@ protected:
 	// Function for enabling Weapon collision after 1 sec
 	void DelayedDrop();
 
+	/* ******************VARIABLES****************** */
+	// Sound When Firing a Weapon
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	class USoundCue *BulletFireSound;
+
+public:
+	// Weapon Fire Defination
+	virtual void Fire();
+
 public:
 	/* ******************Getters And Setters****************** */
 
 	// Weapon State
 	FORCEINLINE EWeaponState GetWeaponState() const { return WeaponState; }
 	void SetWeaponState(EWeaponState State);
+
+	// Weapon Type
+	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
+	FORCEINLINE void SetWeaponType(EWeaponType TypeOfWeapon) { WeaponType = TypeOfWeapon; }
 
 	// Weapon Mesh
 	FORCEINLINE USkeletalMeshComponent *GetWeaponMesh() const { return WeaponMesh; }

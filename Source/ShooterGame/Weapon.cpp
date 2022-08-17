@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "ShooterCharacter.h"
 #include "Blueprint/UserWidget.h"
+#include "ProjectileWeapon.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -81,23 +82,23 @@ void AWeapon::OnWeaponStateSet()
 {
 	switch (WeaponState)
 	{
-		case EWeaponState::EWS_Equipped:
-			WeaponEquippedState();
-			break;
+	case EWeaponState::EWS_Equipped:
+		WeaponEquippedState();
+		break;
 
-		case EWeaponState::EWS_Dropped:
-			WeaponDroppedState();
-			break;
+	case EWeaponState::EWS_Dropped:
+		WeaponDroppedState();
+		break;
 	}
 }
 
 void AWeapon::WeaponEquippedState()
 {
-	if(WeaponBox)
+	if (WeaponBox)
 	{
 		WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	if(WeaponMesh)
+	if (WeaponMesh)
 	{
 		WeaponMesh->SetSimulatePhysics(false);
 		WeaponMesh->SetEnableGravity(false);
@@ -120,9 +121,9 @@ void AWeapon::WeaponDroppedState()
 	GetWorldTimerManager().SetTimer(DelayTimer, this, &ThisClass::DelayedDrop, 1.2f);
 }
 
-void AWeapon::DelayedDrop() 
+void AWeapon::DelayedDrop()
 {
-	if(WeaponBox)
+	if (WeaponBox)
 	{
 		WeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -130,3 +131,7 @@ void AWeapon::DelayedDrop()
 	}
 }
 
+void AWeapon::Fire()
+{
+	
+}

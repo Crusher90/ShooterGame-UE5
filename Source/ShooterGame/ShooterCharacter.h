@@ -49,7 +49,7 @@ private:
 	float Sensitivity = 45.f;
 
 	// ENUM Combat State Variable
-	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
 	ECombatState CombatState = ECombatState::ECS_Unoccupied;
 
 protected:
@@ -83,6 +83,9 @@ protected:
 
 	// Function For Swapping Weapons
 	void SwapWeapons();
+
+	// Function Call Fire Button is Pressed
+	void FireButtonPressed();
 
 public:
 	// Weapon Equipping Functionality

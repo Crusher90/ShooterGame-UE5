@@ -62,6 +62,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Pressed, this, &ThisClass::Sprint);
 	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Released, this, &ThisClass::StopSprint);
 	PlayerInputComponent->BindAction(FName("Equip"), EInputEvent::IE_Pressed, this, &ThisClass::EquipButtonPressed);
+	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Pressed, this, &ThisClass::FireButtonPressed);
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -119,17 +120,25 @@ void AShooterCharacter::CharacterJump()
 
 void AShooterCharacter::Sprint()
 {
-	if (GetCharacterMovement())
+	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Unoccupied)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
+	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Occupied)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 800.f;
 	}
 }
 
 void AShooterCharacter::StopSprint()
 {
-	if (GetCharacterMovement())
+	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Unoccupied)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	}
+	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Occupied)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	}
 }
 
@@ -172,6 +181,7 @@ void AShooterCharacter::AttachWeaponToHands(AWeapon *WeaponInHands)
 		}
 		SetEquippedWeapon(WeaponInHands);
 		CombatState = ECombatState::ECS_Occupied;
+		StopSprint();
 	}
 }
 
@@ -185,4 +195,12 @@ void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
 	}
 	SetEquippedWeapon(nullptr);
 	CombatState = ECombatState::ECS_Unoccupied;
+}
+
+void AShooterCharacter::FireButtonPressed()
+{
+	if(EquippedWeapon)
+	{
+		EquippedWeapon->Fire();
+	}
 }
