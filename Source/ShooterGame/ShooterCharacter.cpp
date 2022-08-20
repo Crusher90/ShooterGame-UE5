@@ -23,21 +23,24 @@ AShooterCharacter::AShooterCharacter()
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = 150.f;
 	GetCharacterMovement()->AirControl = 0.05f;
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 }
 
 // Called when the game starts or when spawned
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	if (GetMesh())
+	{
+		GetMesh()->HideBoneByName(FName("weapon"), EPhysBodyOp::PBO_None);
+		GetMesh()->HideBoneByName(FName("pistol"), EPhysBodyOp::PBO_None);
+	}
 }
 
 // Called every frame
@@ -120,31 +123,26 @@ void AShooterCharacter::CharacterJump()
 
 void AShooterCharacter::Sprint()
 {
-	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Unoccupied)
+	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 600.f;
-	}
-	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Occupied)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 800.f;
 	}
 }
 
 void AShooterCharacter::StopSprint()
 {
-	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Unoccupied)
+	if (GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	}
-	if (GetCharacterMovement() && CombatState == ECombatState::ECS_Occupied)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	}
 }
 
 void AShooterCharacter::EquipButtonPressed()
 {
-	EquipWeapon(OverlappingWeapon);
+	if (OverlappingWeapon)
+	{
+		EquipWeapon(OverlappingWeapon);
+	}
 }
 
 void AShooterCharacter::EquipWeapon(AWeapon *WeaponToEquip)
@@ -199,7 +197,7 @@ void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
 
 void AShooterCharacter::FireButtonPressed()
 {
-	if(EquippedWeapon)
+	if (EquippedWeapon)
 	{
 		EquippedWeapon->Fire();
 	}
