@@ -52,6 +52,12 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
 	ECombatState CombatState = ECombatState::ECS_Unoccupied;
 
+	FRotator StartingAimRotation;
+
+	float AO_Yaw;
+
+	float AO_Pitch;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -87,6 +93,8 @@ protected:
 	// Function Call Fire Button is Pressed
 	void FireButtonPressed();
 
+	void AimOffset(float DeltaTime);
+
 public:
 	// Weapon Equipping Functionality
 	void AttachWeaponToHands(AWeapon *WeaponInHands);
@@ -108,4 +116,7 @@ public:
 	// Equipped Weapon
 	FORCEINLINE AWeapon *GetEquippedWeapon() { return EquippedWeapon; }
 	FORCEINLINE void SetEquippedWeapon(AWeapon *WeaponToSet) { EquippedWeapon = WeaponToSet; }
+
+	FORCEINLINE float GetAO_Yaw() const {return AO_Yaw;}
+	FORCEINLINE float GetAO_Pitch() const {return AO_Pitch;}
 };

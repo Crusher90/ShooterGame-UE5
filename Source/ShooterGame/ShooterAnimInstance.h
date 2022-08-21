@@ -42,4 +42,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
 	bool bCrouched;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
+	float AO_Yaw;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
+	float AO_Pitch;
 };
+  

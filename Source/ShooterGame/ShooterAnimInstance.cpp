@@ -53,6 +53,10 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 			DeltaRotation = FMath::RInterpTo(DeltaRotation, DeltaRot, DeltaTime, 10.f);
 			YawOffset = DeltaRotation.Yaw;
 			// UE_LOG(LogTemp, Warning, TEXT("OffsetYaw %f"), YawOffset);
+
+			AO_Yaw = ShooterCharacter->GetAO_Yaw();
+
+			AO_Pitch = ShooterCharacter->GetAO_Pitch();
 		}
 	}
 }
