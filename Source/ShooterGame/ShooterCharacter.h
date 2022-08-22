@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "CombatState.h"
+#include "TurningInPlace.h"
 #include "ShooterCharacter.generated.h"
 
 UCLASS()
@@ -52,7 +53,13 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
 	ECombatState CombatState = ECombatState::ECS_Unoccupied;
 
+	// ENUM TurningInPlace State Variable
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
+	ETurningInPlace TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+
 	FRotator StartingAimRotation;
+
+	float InterpAO_Yaw;
 
 	float AO_Yaw;
 
@@ -95,6 +102,8 @@ protected:
 
 	void AimOffset(float DeltaTime);
 
+	void TurnInPlace(float DeltaTime);
+
 public:
 	// Weapon Equipping Functionality
 	void AttachWeaponToHands(AWeapon *WeaponInHands);
@@ -108,6 +117,10 @@ public:
 	// Combat State
 	FORCEINLINE ECombatState GetCombatState() const { return CombatState; }
 	FORCEINLINE void SetCombatState(ECombatState State) { CombatState = State; }
+
+	// Combat State
+	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
+	FORCEINLINE void SetTurningInPlace(ETurningInPlace State) { TurningInPlace = State; }
 
 	// Overlapping Weapon
 	FORCEINLINE AWeapon *GetOverlappingWeapon() { return OverlappingWeapon; }

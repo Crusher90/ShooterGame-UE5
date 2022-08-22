@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "TurningInPlace.h"
 #include "ShooterAnimInstance.generated.h"
 
 /**
@@ -41,6 +42,9 @@ private:
 	bool bHasWeapon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
+	class AWeapon *EquippedWeapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
 	bool bCrouched;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
@@ -48,5 +52,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
 	float AO_Pitch;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
+	FTransform LeftHandTransform;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
+	ETurningInPlace TurningInPlace;
 };
   
