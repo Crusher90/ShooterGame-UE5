@@ -7,6 +7,7 @@
 #include "ShooterCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AProjectileBase::AProjectileBase()
@@ -30,6 +31,9 @@ AProjectileBase::AProjectileBase()
 	ProjectileMovementComponent->InitialSpeed = 2000.f;
 	ProjectileMovementComponent->MaxSpeed = 2000.f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+
+	BulletTracer = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BulletTracer"));
+	BulletTracer->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned

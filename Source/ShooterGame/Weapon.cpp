@@ -7,6 +7,9 @@
 #include "ShooterCharacter.h"
 #include "Blueprint/UserWidget.h"
 #include "ProjectileWeapon.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Particles/ParticleSystem.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -133,5 +136,9 @@ void AWeapon::DelayedDrop()
 
 void AWeapon::Fire()
 {
-	
+	const USkeletalMeshSocket *MuzzleFlashSocket = WeaponMesh->GetSocketByName("MuzzleFlash");
+	if(MuzzleFlashSocket && MuzzleFlashParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, MuzzleFlashParticle, MuzzleFlashSocket->GetSocketLocation(WeaponMesh), MuzzleFlashSocket->GetSocketTransform(WeaponMesh).GetRotation().Rotator());
+	}
 }

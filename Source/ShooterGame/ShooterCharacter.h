@@ -65,6 +65,10 @@ private:
 
 	float AO_Pitch;
 
+	// Montages
+	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
+	class UAnimMontage *FireRifleMontage;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -103,6 +107,8 @@ protected:
 	void AimOffset(float DeltaTime);
 
 	void TurnInPlace(float DeltaTime);
+
+	void PlayFireRifleMontage();
 
 public:
 	// Weapon Equipping Functionality

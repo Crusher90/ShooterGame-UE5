@@ -86,6 +86,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
 	class USoundCue *BulletFireSound;
 
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	class UParticleSystem *MuzzleFlashParticle;
+
 public:
 	// Weapon Fire Defination
 	virtual void Fire();

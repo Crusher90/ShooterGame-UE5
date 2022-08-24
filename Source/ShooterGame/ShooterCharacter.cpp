@@ -7,6 +7,7 @@
 #include "Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -17,6 +18,7 @@ AShooterCharacter::AShooterCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetMesh());
 	CameraBoom->bUsePawnControlRotation = true;
+	CameraBoom->SocketOffset = FVector(0.f, 75.f, 75.f);
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
@@ -204,6 +206,7 @@ void AShooterCharacter::FireButtonPressed()
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->Fire();
+		PlayFireRifleMontage();
 	}
 }
 
@@ -255,6 +258,20 @@ void AShooterCharacter::TurnInPlace(float DeltaTime)
 		{
 			TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		}
+	}
+}
+
+// PlayMontages
+
+void AShooterCharacter::PlayFireRifleMontage()
+{
+	if(FireRifleMontage)
+	{
+		UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+		if(AnimInstance)
+		{
+			AnimInstance->Montage_Play(FireRifleMontage);
 		}
 	}
 }

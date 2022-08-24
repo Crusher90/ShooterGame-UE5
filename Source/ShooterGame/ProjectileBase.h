@@ -36,6 +36,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ProjectileBase")
 	class UParticleSystem *BulletImpactParticles;
 
+	UPROPERTY(EditAnywhere, Category = "ProjectileBase")
+	class UParticleSystemComponent *BulletTracer;
+
 protected:
 	UFUNCTION()
 	virtual void OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
