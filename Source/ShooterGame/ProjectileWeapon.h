@@ -16,7 +16,7 @@ class SHOOTERGAME_API AProjectileWeapon : public AWeapon
 
 public:
 	// Overriding fire function from weapon class
-	virtual void Fire() override;
+	virtual void Fire(const FVector& HitTarget) override;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "ProjectileWeapon")

@@ -8,6 +8,8 @@
 #include "TurningInPlace.h"
 #include "ShooterCharacter.generated.h"
 
+#define TRACE_LENGTH 100000.f
+
 UCLASS()
 class SHOOTERGAME_API AShooterCharacter : public ACharacter
 {
@@ -65,9 +67,17 @@ private:
 
 	float AO_Pitch;
 
+	UPROPERTY()
+	class AShooterPlayerController *ShooterController;
+
+	UPROPERTY()
+	class AShooterHUD *ShooterHUD;
+
 	// Montages
 	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
 	class UAnimMontage *FireRifleMontage;
+
+	FVector HitTarget;
 
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
@@ -109,6 +119,10 @@ protected:
 	void TurnInPlace(float DeltaTime);
 
 	void PlayFireRifleMontage();
+
+	void SetCrosshairToScreen(float DeltaTime);
+
+	void TraceUnderCrosshair(FHitResult &TraceHitResult);
 
 public:
 	// Weapon Equipping Functionality

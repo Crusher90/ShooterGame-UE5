@@ -8,6 +8,9 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Animation/AnimMontage.h"
+#include "ShooterPlayerController.h"
+#include "ShooterHUD.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -53,6 +56,9 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	AimOffset(DeltaTime);
+	SetCrosshairToScreen(DeltaTime);
+	FHitResult HitResult;
+	TraceUnderCrosshair(HitResult);
 }
 
 // Called to bind functionality to input
@@ -205,7 +211,7 @@ void AShooterCharacter::FireButtonPressed()
 {
 	if (EquippedWeapon)
 	{
-		EquippedWeapon->Fire();
+		EquippedWeapon->Fire(HitTarget);
 		PlayFireRifleMontage();
 	}
 }
@@ -272,6 +278,68 @@ void AShooterCharacter::PlayFireRifleMontage()
 		if(AnimInstance)
 		{
 			AnimInstance->Montage_Play(FireRifleMontage);
+		}
+	}
+}
+
+void AShooterCharacter::SetCrosshairToScreen(float DeltaTime) 
+{
+	if(Controller == nullptr)
+		return;
+
+	ShooterController = ShooterController == nullptr ? Cast<AShooterPlayerController>(Controller) : ShooterController;
+	if(ShooterController)
+	{
+		ShooterHUD = ShooterHUD == nullptr ? Cast<AShooterHUD>(ShooterController->GetHUD()) : ShooterHUD;
+		if(ShooterHUD)
+		{
+			FHUDPackage HUDPackage;
+			if(EquippedWeapon)
+			{
+				HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
+				HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
+				HUDPackage.CrosshairRight = EquippedWeapon->CrosshairRight;
+				HUDPackage.CrosshairTop = EquippedWeapon->CrosshairTop;
+				HUDPackage.CrosshairBottom = EquippedWeapon->CrosshairBottom;
+			}
+			else
+			{
+				HUDPackage.CrosshairCenter = nullptr;
+				HUDPackage.CrosshairLeft = nullptr;
+				HUDPackage.CrosshairRight = nullptr;
+				HUDPackage.CrosshairTop = nullptr;
+				HUDPackage.CrosshairBottom = nullptr;
+			}
+			ShooterHUD->SetHUDPackage(HUDPackage);
+		}
+	}
+}
+
+void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult) 
+{
+	FVector2D ViewportSize;
+	if(GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+	}
+	FVector2D CrosshairLocation(ViewportSize.X / 2.f, ViewportSize.Y / 2.f);
+	FVector CrosshairWorldPosition;
+	FVector CrosshairWorldDirection;
+	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(ShooterController, CrosshairLocation, CrosshairWorldPosition, CrosshairWorldDirection);
+	if(bScreenToWorld)
+	{
+		FVector Start = CrosshairWorldPosition;
+		FVector End = Start + CrosshairWorldDirection * TRACE_LENGTH;
+
+		GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECollisionChannel::ECC_Visibility);
+		if(!TraceHitResult.bBlockingHit)
+		{
+			TraceHitResult.ImpactPoint = End;
+			HitTarget = End;
+		}
+		else
+		{
+			HitTarget = TraceHitResult.ImpactPoint;
 		}
 	}
 }

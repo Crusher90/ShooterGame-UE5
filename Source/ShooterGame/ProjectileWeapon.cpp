@@ -8,17 +8,18 @@
 #include "Sound/SoundCue.h"
 
 
-void AProjectileWeapon::Fire() 
+void AProjectileWeapon::Fire(const FVector& HitTarget) 
 {
-    Super::Fire();
+    Super::Fire(HitTarget);
 
     const USkeletalMeshSocket *MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
     if(MuzzleFlashSocket)
     {
-        FActorSpawnParameters SpawnParameters;
+        FVector ToTarget = HitTarget - MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh()).GetLocation();
         if(ProjectileToSpawn)
         {
-            GetWorld()->SpawnActor<AProjectileBase>(ProjectileToSpawn, MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh()), SpawnParameters);
+            FActorSpawnParameters SpawnParameters;
+            GetWorld()->SpawnActor<AProjectileBase>(ProjectileToSpawn, MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh()).GetLocation(), ToTarget.Rotation(), SpawnParameters);
             UGameplayStatics::PlaySoundAtLocation(this, BulletFireSound, GetActorLocation());
         } 
     }

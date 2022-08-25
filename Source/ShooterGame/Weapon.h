@@ -81,6 +81,7 @@ protected:
 	// Function for enabling Weapon collision after 1 sec
 	void DelayedDrop();
 
+
 	/* ******************VARIABLES****************** */
 	// Sound When Firing a Weapon
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
@@ -91,7 +92,23 @@ protected:
 
 public:
 	// Weapon Fire Defination
-	virtual void Fire();
+	virtual void Fire(const FVector& HitTarget);
+
+	// Crosshairs For Weapon
+	UPROPERTY(EditAnywhere, Category = "WeaponCrosshairs")
+	class UTexture2D *CrosshairCenter;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponCrosshairs")
+	UTexture2D *CrosshairLeft;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponCrosshairs")
+	UTexture2D *CrosshairRight;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponCrosshairs")
+	UTexture2D *CrosshairTop;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponCrosshairs")
+	UTexture2D *CrosshairBottom;
 
 public:
 	/* ******************Getters And Setters****************** */
