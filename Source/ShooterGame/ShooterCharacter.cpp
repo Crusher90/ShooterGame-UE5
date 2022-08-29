@@ -57,8 +57,6 @@ void AShooterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	AimOffset(DeltaTime);
 	SetCrosshairToScreen(DeltaTime);
-	FHitResult HitResult;
-	TraceUnderCrosshair(HitResult);
 }
 
 // Called to bind functionality to input
@@ -78,6 +76,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Released, this, &ThisClass::StopSprint);
 	PlayerInputComponent->BindAction(FName("Equip"), EInputEvent::IE_Pressed, this, &ThisClass::EquipButtonPressed);
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Pressed, this, &ThisClass::FireButtonPressed);
+	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ThisClass::FireButtonReleased);
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -131,8 +130,8 @@ void AShooterCharacter::CrouchButtonPressed()
 void AShooterCharacter::CharacterJump()
 {
 	Jump();
-}
-
+}  
+  
 void AShooterCharacter::Sprint()
 {
 	if (GetCharacterMovement())
@@ -211,10 +210,23 @@ void AShooterCharacter::FireButtonPressed()
 {
 	if (EquippedWeapon)
 	{
-		FHitResult HitResult;
-		TraceUnderCrosshair(HitResult);
-		EquippedWeapon->Fire(HitTarget);
-		PlayFireRifleMontage();
+		if(bCanFire)
+		{
+			FHitResult HitResult;
+			TraceUnderCrosshair(HitResult);
+			EquippedWeapon->Fire(HitTarget);
+			PlayFireRifleMontage();
+			FireTimerStart();
+		}
+	}
+}
+
+void AShooterCharacter::FireButtonReleased() 
+{
+	if(EquippedWeapon)
+	{
+		bCanFire = true;
+		GetWorldTimerManager().ClearTimer(FireTimer);
 	}
 }
 
@@ -343,5 +355,21 @@ void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult)
 		{
 			HitTarget = TraceHitResult.ImpactPoint;
 		}
+	}
+}
+
+void AShooterCharacter::FireTimerStart() 
+{
+	if(EquippedWeapon == nullptr) return;
+	bCanFire = false;
+	GetWorldTimerManager().SetTimer(FireTimer, this, &ThisClass::FireTimerFinished, EquippedWeapon->GetFireDelay());
+}
+
+void AShooterCharacter::FireTimerFinished() 
+{
+	bCanFire = true;
+	if(EquippedWeapon->GetAutomaticWeaponValue())
+	{
+		FireButtonPressed();
 	}
 }

@@ -135,7 +135,7 @@ void AWeapon::DelayedDrop()
 }
 
 void AWeapon::Fire(const FVector& HitTarget)
-{
+{	
 	const USkeletalMeshSocket *MuzzleFlashSocket = WeaponMesh->GetSocketByName("MuzzleFlash");
 	if(MuzzleFlashSocket && MuzzleFlashParticle)
 	{

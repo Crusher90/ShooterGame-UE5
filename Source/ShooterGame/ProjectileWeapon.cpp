@@ -24,3 +24,4 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
         } 
     }
 }
+

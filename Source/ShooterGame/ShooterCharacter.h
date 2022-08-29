@@ -79,6 +79,10 @@ private:
 
 	FVector HitTarget;
 
+	FTimerHandle FireTimer;
+
+	bool bCanFire = true;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -114,6 +118,9 @@ protected:
 	// Function Call Fire Button is Pressed
 	void FireButtonPressed();
 
+	// Function Call Fire Button is Pressed
+	void FireButtonReleased();
+
 	void AimOffset(float DeltaTime);
 
 	void TurnInPlace(float DeltaTime);
@@ -123,6 +130,10 @@ protected:
 	void SetCrosshairToScreen(float DeltaTime);
 
 	void TraceUnderCrosshair(FHitResult &TraceHitResult);
+
+	void FireTimerStart();
+
+	void FireTimerFinished();
 
 public:
 	// Weapon Equipping Functionality

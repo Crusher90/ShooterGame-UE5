@@ -59,6 +59,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
 	EWeaponType WeaponType;
 
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	float FireDelay = 0.1f;
+
 protected:
 	/* ******************FUNCTIONS****************** */
 	// Sets the Weapon State
@@ -81,7 +84,6 @@ protected:
 	// Function for enabling Weapon collision after 1 sec
 	void DelayedDrop();
 
-
 	/* ******************VARIABLES****************** */
 	// Sound When Firing a Weapon
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
@@ -89,6 +91,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
 	class UParticleSystem *MuzzleFlashParticle;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	bool bAutomaticWeapon = false;
 
 public:
 	// Weapon Fire Defination
@@ -123,4 +128,7 @@ public:
 
 	// Weapon Mesh
 	FORCEINLINE USkeletalMeshComponent *GetWeaponMesh() const { return WeaponMesh; }
+
+	FORCEINLINE bool GetAutomaticWeaponValue() const {return bAutomaticWeapon;}
+	FORCEINLINE float GetFireDelay() const {return FireDelay;}
 };
