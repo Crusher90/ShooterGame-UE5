@@ -58,5 +58,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
 	ETurningInPlace TurningInPlace;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterAnim", meta = (AllowPrivateAccess = "true"))
+	FRotator RightHandRotation;
 };
   

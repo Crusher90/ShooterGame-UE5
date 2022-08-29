@@ -211,12 +211,14 @@ void AShooterCharacter::FireButtonPressed()
 {
 	if (EquippedWeapon)
 	{
+		FHitResult HitResult;
+		TraceUnderCrosshair(HitResult);
 		EquippedWeapon->Fire(HitTarget);
 		PlayFireRifleMontage();
 	}
 }
 
-void AShooterCharacter::AimOffset(float DeltaTime) 
+void AShooterCharacter::AimOffset(float DeltaTime)
 {
 	FVector Velocity = GetVelocity();
 	Velocity.Z = 0.f;
@@ -224,19 +226,19 @@ void AShooterCharacter::AimOffset(float DeltaTime)
 
 	bool bIsFalling = GetCharacterMovement()->IsFalling();
 
-	if(Speed == 0.f && bIsFalling == false)
+	if (Speed == 0.f && bIsFalling == false)
 	{
 		FRotator CurrentAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
 		AO_Yaw = DeltaAimRotation.Yaw;
-		if(TurningInPlace == ETurningInPlace::ETIP_NotTurning)
+		if (TurningInPlace == ETurningInPlace::ETIP_NotTurning)
 		{
 			InterpAO_Yaw = AO_Yaw;
 		}
 		bUseControllerRotationYaw = true;
 		TurnInPlace(DeltaTime);
 	}
-	if(Speed > 0.f || bIsFalling == true)
+	if (Speed > 0.f || bIsFalling == true)
 	{
 		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		AO_Yaw = 0.f;
@@ -246,21 +248,21 @@ void AShooterCharacter::AimOffset(float DeltaTime)
 	AO_Pitch = GetBaseAimRotation().Pitch;
 }
 
-void AShooterCharacter::TurnInPlace(float DeltaTime) 
+void AShooterCharacter::TurnInPlace(float DeltaTime)
 {
-	if(AO_Yaw > 90.f)
+	if (AO_Yaw > 90.f)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Right;
 	}
-	else if(AO_Yaw < -90.f)
+	else if (AO_Yaw < -90.f)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Left;
 	}
-	if(TurningInPlace != ETurningInPlace::ETIP_NotTurning)
+	if (TurningInPlace != ETurningInPlace::ETIP_NotTurning)
 	{
 		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.f, DeltaTime, 3.f);
 		AO_Yaw = InterpAO_Yaw;
-		if(FMath::Abs(AO_Yaw) < 15.f)
+		if (FMath::Abs(AO_Yaw) < 15.f)
 		{
 			TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
@@ -272,29 +274,29 @@ void AShooterCharacter::TurnInPlace(float DeltaTime)
 
 void AShooterCharacter::PlayFireRifleMontage()
 {
-	if(FireRifleMontage)
+	if (FireRifleMontage)
 	{
 		UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
-		if(AnimInstance)
+		if (AnimInstance)
 		{
 			AnimInstance->Montage_Play(FireRifleMontage);
 		}
 	}
 }
 
-void AShooterCharacter::SetCrosshairToScreen(float DeltaTime) 
+void AShooterCharacter::SetCrosshairToScreen(float DeltaTime)
 {
-	if(Controller == nullptr)
+	if (Controller == nullptr)
 		return;
 
 	ShooterController = ShooterController == nullptr ? Cast<AShooterPlayerController>(Controller) : ShooterController;
-	if(ShooterController)
+	if (ShooterController)
 	{
 		ShooterHUD = ShooterHUD == nullptr ? Cast<AShooterHUD>(ShooterController->GetHUD()) : ShooterHUD;
-		if(ShooterHUD)
+		if (ShooterHUD)
 		{
 			FHUDPackage HUDPackage;
-			if(EquippedWeapon)
+			if (EquippedWeapon)
 			{
 				HUDPackage.CrosshairCenter = EquippedWeapon->CrosshairCenter;
 				HUDPackage.CrosshairLeft = EquippedWeapon->CrosshairLeft;
@@ -315,10 +317,10 @@ void AShooterCharacter::SetCrosshairToScreen(float DeltaTime)
 	}
 }
 
-void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult) 
+void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult)
 {
 	FVector2D ViewportSize;
-	if(GEngine && GEngine->GameViewport)
+	if (GEngine && GEngine->GameViewport)
 	{
 		GEngine->GameViewport->GetViewportSize(ViewportSize);
 	}
@@ -326,13 +328,13 @@ void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult)
 	FVector CrosshairWorldPosition;
 	FVector CrosshairWorldDirection;
 	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(ShooterController, CrosshairLocation, CrosshairWorldPosition, CrosshairWorldDirection);
-	if(bScreenToWorld)
+	if (bScreenToWorld)
 	{
 		FVector Start = CrosshairWorldPosition;
 		FVector End = Start + CrosshairWorldDirection * TRACE_LENGTH;
 
 		GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECollisionChannel::ECC_Visibility);
-		if(!TraceHitResult.bBlockingHit)
+		if (!TraceHitResult.bBlockingHit)
 		{
 			TraceHitResult.ImpactPoint = End;
 			HitTarget = End;
