@@ -103,6 +103,9 @@ protected:
 	class UParticleSystem *MuzzleFlashParticle;
 
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	class UParticleSystem *HitParticle;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
 	bool bAutomaticWeapon = false;
 
 public:

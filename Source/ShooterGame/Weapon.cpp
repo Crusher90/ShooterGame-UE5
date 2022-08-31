@@ -141,6 +141,10 @@ void AWeapon::Fire(const FVector& HitTarget)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, MuzzleFlashParticle, MuzzleFlashSocket->GetSocketLocation(WeaponMesh), MuzzleFlashSocket->GetSocketTransform(WeaponMesh).GetRotation().Rotator());
 	}
+	if(HitParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle, HitTarget);
+	}
 	if (MagazineAmmo > 0)
 		--MagazineAmmo;
 	else
