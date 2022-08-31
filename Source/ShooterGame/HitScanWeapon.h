@@ -18,5 +18,9 @@ public:
 	// Overriding fire function from weapon class
 	virtual void Fire(const FVector& HitTarget) override;
 	
-	
+	UPROPERTY(EditAnywhere, Category = "HitScanProperties")
+	class UParticleSystem *BeamParticles;
+
+	UPROPERTY(EditAnywhere, Category = "HitScanProperties")
+	class UParticleSystemComponent *Beam;
 };

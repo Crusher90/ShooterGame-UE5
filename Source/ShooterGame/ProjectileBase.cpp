@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AProjectileBase::AProjectileBase()
@@ -17,7 +18,7 @@ AProjectileBase::AProjectileBase()
 
 	ProjectileBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProjectileBox"));
 	SetRootComponent(ProjectileBox);
-	ProjectileBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	ProjectileBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	ProjectileBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	ProjectileBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	ProjectileBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
@@ -59,5 +60,13 @@ void AProjectileBase::Destroyed()
 {
 	Super::Destroyed();
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BulletImpactParticles, GetActorLocation());
+	if(BulletImpactParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BulletImpactParticles, GetActorLocation());
+	}
+	if(HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
+	
 }

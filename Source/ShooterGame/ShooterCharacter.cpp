@@ -209,30 +209,47 @@ void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
 
 void AShooterCharacter::FireButtonPressed()
 {
-	if(bFireButtonPressed)
+	bFireButtonPressed = true;
+	if (EquippedWeapon)
 	{
-		if (EquippedWeapon)
+		if (EquippedWeapon->GetMagazineAmmo() == 0 && EquippedWeapon->GetCarriedAmmo() == 0)
+			return;
+
+		if (EquippedWeapon->GetMagazineAmmo() == 0 && EquippedWeapon->GetCarriedAmmo() > 0)
+			ReloadWeapon();
+
+		if (bCanFire)
 		{
-			if (EquippedWeapon->GetMagazineAmmo() == 0 && EquippedWeapon->GetCarriedAmmo() == 0)
-				return;
-
-			if (EquippedWeapon->GetMagazineAmmo() == 0 && EquippedWeapon->GetCarriedAmmo() > 0)
-				ReloadWeapon();
-
-			if (bCanFire)
-			{
-				FHitResult HitResult;
-				TraceUnderCrosshair(HitResult);
-				EquippedWeapon->Fire(HitTarget);
-				PlayFireRifleMontage();
-				FireTimerStart();
-			}
+			FHitResult HitResult;
+			TraceUnderCrosshair(HitResult);
+			EquippedWeapon->Fire(HitTarget);
+			PlayFireRifleMontage();
+			FireTimerStart();
 		}
+	}
+}
+
+void AShooterCharacter::FireTimerStart()
+{
+	if (EquippedWeapon == nullptr)
+		return;
+	bCanFire = false;
+	GetWorldTimerManager().SetTimer(FireTimer, this, &ThisClass::FireTimerFinished, EquippedWeapon->GetFireDelay());
+}
+
+void AShooterCharacter::FireTimerFinished()
+{
+	bCanFire = true;
+	if (EquippedWeapon->GetAutomaticWeaponValue() && bFireButtonPressed)
+	{
+		FireButtonPressed();
 	}
 }
 
 void AShooterCharacter::ReloadButtonPressed()
 {
+	GetWorldTimerManager().ClearTimer(FireTimer);
+	bCanFire = false;
 	if(EquippedWeapon)
 	{
 		ReloadWeapon();
@@ -241,7 +258,7 @@ void AShooterCharacter::ReloadButtonPressed()
 
 void AShooterCharacter::ReloadWeapon()
 {
-	bFireButtonPressed = false;
+	bCanFire = false;
 	if (EquippedWeapon->GetCarriedAmmo() == 0)
 		return;
 	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
@@ -256,16 +273,12 @@ void AShooterCharacter::ReloadWeapon()
 void AShooterCharacter::AfterReloadMontage()
 {
 	EquippedWeapon->Reload();
-	bFireButtonPressed = true;
+	bCanFire = true;
 }
 
 void AShooterCharacter::FireButtonReleased()
 {
-	if (EquippedWeapon)
-	{
-		bCanFire = true;
-		GetWorldTimerManager().ClearTimer(FireTimer);
-	}
+	bFireButtonPressed = false;
 }
 
 void AShooterCharacter::AimOffset(float DeltaTime)
@@ -393,22 +406,5 @@ void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult)
 		{
 			HitTarget = TraceHitResult.ImpactPoint;
 		}
-	}
-}
-
-void AShooterCharacter::FireTimerStart()
-{
-	if (EquippedWeapon == nullptr)
-		return;
-	bCanFire = false;
-	GetWorldTimerManager().SetTimer(FireTimer, this, &ThisClass::FireTimerFinished, EquippedWeapon->GetFireDelay());
-}
-
-void AShooterCharacter::FireTimerFinished()
-{
-	bCanFire = true;
-	if (EquippedWeapon->GetAutomaticWeaponValue())
-	{
-		FireButtonPressed();
 	}
 }

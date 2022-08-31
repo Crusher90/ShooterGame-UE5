@@ -84,9 +84,10 @@ private:
 
 	FTimerHandle FireTimer;
 
+	UPROPERTY(VisibleAnywhere)
 	bool bCanFire = true;
 
-	bool bFireButtonPressed = true;
+	bool bFireButtonPressed = false;
 
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
