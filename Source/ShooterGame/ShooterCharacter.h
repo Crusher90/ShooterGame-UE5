@@ -77,11 +77,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
 	class UAnimMontage *FireRifleMontage;
 
+	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
+	class UAnimMontage *ReloadMontage;
+
 	FVector HitTarget;
 
 	FTimerHandle FireTimer;
 
 	bool bCanFire = true;
+
+	bool bFireButtonPressed = true;
 
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
@@ -134,6 +139,12 @@ protected:
 	void FireTimerStart();
 
 	void FireTimerFinished();
+
+	void ReloadButtonPressed();
+
+	void AfterReloadMontage();
+
+	void ReloadWeapon();
 
 public:
 	// Weapon Equipping Functionality

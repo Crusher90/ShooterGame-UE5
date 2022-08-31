@@ -77,6 +77,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction(FName("Equip"), EInputEvent::IE_Pressed, this, &ThisClass::EquipButtonPressed);
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Pressed, this, &ThisClass::FireButtonPressed);
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ThisClass::FireButtonReleased);
+	PlayerInputComponent->BindAction(FName("Reload"), EInputEvent::IE_Pressed, this, &ThisClass::ReloadButtonPressed);
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -130,8 +131,8 @@ void AShooterCharacter::CrouchButtonPressed()
 void AShooterCharacter::CharacterJump()
 {
 	Jump();
-}  
-  
+}
+
 void AShooterCharacter::Sprint()
 {
 	if (GetCharacterMovement())
@@ -208,22 +209,59 @@ void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
 
 void AShooterCharacter::FireButtonPressed()
 {
-	if (EquippedWeapon)
+	if(bFireButtonPressed)
 	{
-		if(bCanFire)
+		if (EquippedWeapon)
 		{
-			FHitResult HitResult;
-			TraceUnderCrosshair(HitResult);
-			EquippedWeapon->Fire(HitTarget);
-			PlayFireRifleMontage();
-			FireTimerStart();
+			if (EquippedWeapon->GetMagazineAmmo() == 0 && EquippedWeapon->GetCarriedAmmo() == 0)
+				return;
+
+			if (EquippedWeapon->GetMagazineAmmo() == 0 && EquippedWeapon->GetCarriedAmmo() > 0)
+				ReloadWeapon();
+
+			if (bCanFire)
+			{
+				FHitResult HitResult;
+				TraceUnderCrosshair(HitResult);
+				EquippedWeapon->Fire(HitTarget);
+				PlayFireRifleMontage();
+				FireTimerStart();
+			}
 		}
 	}
 }
 
-void AShooterCharacter::FireButtonReleased() 
+void AShooterCharacter::ReloadButtonPressed()
 {
 	if(EquippedWeapon)
+	{
+		ReloadWeapon();
+	}
+}
+
+void AShooterCharacter::ReloadWeapon()
+{
+	bFireButtonPressed = false;
+	if (EquippedWeapon->GetCarriedAmmo() == 0)
+		return;
+	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ReloadMontage)
+	{
+		AnimInstance->Montage_Play(ReloadMontage);
+	}
+	FTimerHandle ReloadTimer;
+	GetWorldTimerManager().SetTimer(ReloadTimer, this, &ThisClass::AfterReloadMontage, 2.f);
+}
+
+void AShooterCharacter::AfterReloadMontage()
+{
+	EquippedWeapon->Reload();
+	bFireButtonPressed = true;
+}
+
+void AShooterCharacter::FireButtonReleased()
+{
+	if (EquippedWeapon)
 	{
 		bCanFire = true;
 		GetWorldTimerManager().ClearTimer(FireTimer);
@@ -358,17 +396,18 @@ void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult)
 	}
 }
 
-void AShooterCharacter::FireTimerStart() 
+void AShooterCharacter::FireTimerStart()
 {
-	if(EquippedWeapon == nullptr) return;
+	if (EquippedWeapon == nullptr)
+		return;
 	bCanFire = false;
 	GetWorldTimerManager().SetTimer(FireTimer, this, &ThisClass::FireTimerFinished, EquippedWeapon->GetFireDelay());
 }
 
-void AShooterCharacter::FireTimerFinished() 
+void AShooterCharacter::FireTimerFinished()
 {
 	bCanFire = true;
-	if(EquippedWeapon->GetAutomaticWeaponValue())
+	if (EquippedWeapon->GetAutomaticWeaponValue())
 	{
 		FireButtonPressed();
 	}

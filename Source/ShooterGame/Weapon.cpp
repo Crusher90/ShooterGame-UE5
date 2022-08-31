@@ -141,4 +141,23 @@ void AWeapon::Fire(const FVector& HitTarget)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, MuzzleFlashParticle, MuzzleFlashSocket->GetSocketLocation(WeaponMesh), MuzzleFlashSocket->GetSocketTransform(WeaponMesh).GetRotation().Rotator());
 	}
+	if (MagazineAmmo > 0)
+		--MagazineAmmo;
+	else
+		MagazineAmmo = 0;
+}
+
+void AWeapon::Reload() 
+{
+	int32 AmountToReload = MagazineSize - MagazineAmmo;
+	if(AmountToReload >= CarriedAmmo)
+	{
+		MagazineAmmo = MagazineAmmo + CarriedAmmo;
+		CarriedAmmo = 0;
+	}
+	else
+	{
+		CarriedAmmo = CarriedAmmo - AmountToReload;
+		MagazineAmmo = MagazineAmmo + AmountToReload;
+	}
 }

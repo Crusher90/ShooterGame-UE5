@@ -62,6 +62,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
 	float FireDelay = 0.1f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
+	int32 MagazineAmmo = 30;
+
+	int32 MagazineSize = 30;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
+	int32 CarriedAmmo = 30;
+
+	int32 MaxCarriedAmmo = 500;
+
 protected:
 	/* ******************FUNCTIONS****************** */
 	// Sets the Weapon State
@@ -99,6 +109,8 @@ public:
 	// Weapon Fire Defination
 	virtual void Fire(const FVector& HitTarget);
 
+	void Reload();
+
 	// Crosshairs For Weapon
 	UPROPERTY(EditAnywhere, Category = "WeaponCrosshairs")
 	class UTexture2D *CrosshairCenter;
@@ -131,4 +143,7 @@ public:
 
 	FORCEINLINE bool GetAutomaticWeaponValue() const {return bAutomaticWeapon;}
 	FORCEINLINE float GetFireDelay() const {return FireDelay;}
+
+	FORCEINLINE int32 GetMagazineAmmo() const {return MagazineAmmo;}
+	FORCEINLINE int32 GetCarriedAmmo() const { return CarriedAmmo; }
 };
