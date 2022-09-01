@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "WeaponTypes.h"
 #include "ProjectileBase.generated.h"
 
 UCLASS()
@@ -42,9 +43,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ProjectileBase")
 	class USoundCue *HitSound;
 
+	UPROPERTY(EditAnywhere, Category = "ProjectileBase")
+	EWeaponType WeaponType;
+
+	FTimerHandle GrenadeDestroyTimer;
+
+	UPROPERTY(EditAnywhere, Category = "ProjectileBase")
+	float GrenadeDestroyTime = 5.f;
+
 protected:
 	UFUNCTION()
 	virtual void OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
+
+	void DestroyProjectile();
 
 public:
 	virtual void Destroyed() override;

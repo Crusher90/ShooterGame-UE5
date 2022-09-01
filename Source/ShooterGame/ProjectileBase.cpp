@@ -53,6 +53,16 @@ void AProjectileBase::Tick(float DeltaTime)
 
 void AProjectileBase::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit)
 {
+	if (WeaponType == EWeaponType::EWT_GrenadeLauncher)
+	{
+		GetWorldTimerManager().SetTimer(GrenadeDestroyTimer, this, &ThisClass::DestroyProjectile, GrenadeDestroyTime);
+		return;
+	}
+	DestroyProjectile();
+}
+
+void AProjectileBase::DestroyProjectile()
+{
 	Destroy();
 }
 
@@ -60,13 +70,12 @@ void AProjectileBase::Destroyed()
 {
 	Super::Destroyed();
 
-	if(BulletImpactParticles)
+	if (BulletImpactParticles)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BulletImpactParticles, GetActorLocation());
 	}
-	if(HitSound)
+	if (HitSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 	}
-	
 }

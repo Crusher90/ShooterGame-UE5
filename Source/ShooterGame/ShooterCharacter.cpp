@@ -250,7 +250,7 @@ void AShooterCharacter::ReloadButtonPressed()
 {
 	GetWorldTimerManager().ClearTimer(FireTimer);
 	bCanFire = false;
-	if(EquippedWeapon)
+	if (EquippedWeapon)
 	{
 		ReloadWeapon();
 	}
