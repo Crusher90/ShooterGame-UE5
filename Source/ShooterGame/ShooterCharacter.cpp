@@ -215,7 +215,8 @@ void AShooterCharacter::InitialValues()
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		GetCharacterMovement()->JumpZVelocity = 600.f;
 		SetUseSprint(true);
-		EquippedWeapon->SetFireDelay(0.2f);
+		EquippedWeapon->SetFireDelay(0.2f
+		);
 	}
 }
 
@@ -270,6 +271,7 @@ void AShooterCharacter::ReloadButtonPressed()
 	if (EquippedWeapon->GetCarriedAmmo() > 0)
 	{
 		ReloadWeapon();
+		CombatState = ECombatState::ECS_Reloading;
 	}
 	GetWorldTimerManager().ClearTimer(FireTimer);
 }
@@ -290,6 +292,7 @@ void AShooterCharacter::AfterReloadMontage()
 {
 	EquippedWeapon->Reload();
 	bCanFire = true;
+	CombatState = ECombatState::ECS_Occupied;
 }
 
 void AShooterCharacter::FireButtonReleased()

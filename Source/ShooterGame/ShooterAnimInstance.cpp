@@ -80,6 +80,8 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 			}
 
 			TurningInPlace = ShooterCharacter->GetTurningInPlace();
+			
+			bUseFabrik = ShooterCharacter->GetCombatState() != ECombatState::ECS_Reloading;
 		}
 	}
 }
