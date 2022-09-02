@@ -89,6 +89,18 @@ private:
 
 	bool bFireButtonPressed = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
+	float Health = 100.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
+	float MaxHealth = 100.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
+	float Shield = 100.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
+	float MaxShield = 100.f;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);

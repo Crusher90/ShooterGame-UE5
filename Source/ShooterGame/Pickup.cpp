@@ -6,6 +6,9 @@
 #include "ShooterCharacter.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+#include "Weapon.h"
 
 // Sets default values
 APickup::APickup()
@@ -37,20 +40,38 @@ void APickup::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(PickupSphere)
+	if (PickupSphere)
 	{
 		PickupSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnPickupSphereBeginOverlap);
 	}
 }
 
-void APickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) 
+void APickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
-	if(OtherActor)
+	if (OtherActor)
 	{
 		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
-		if(ShooterCharacter)
+		if (ShooterCharacter)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Overlap"));
+			Destroy();
 		}
+	}
+}
+
+void APickup::Destroyed()
+{
+	Super::Destroyed();
+
+	if (AfterPickupSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, AfterPickupSound, GetActorLocation());
+	}
+	if (AfterNiagaraParticles)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, AfterNiagaraParticles, GetActorLocation());
+	}
+	if (AfterPickupParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, AfterPickupParticles, GetActorLocation());
 	}
 }

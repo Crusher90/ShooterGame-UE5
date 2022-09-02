@@ -67,9 +67,6 @@ private:
 
 	int32 MagazineSize = 30;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
-	int32 CarriedAmmo = 30;
-
 	int32 MaxCarriedAmmo = 500;
 
 protected:
@@ -130,6 +127,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "WeaponCrosshairs")
 	UTexture2D *CrosshairBottom;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
+	int32 CarriedAmmo = 30;
+
 public:
 	/* ******************Getters And Setters****************** */
 
@@ -148,5 +148,6 @@ public:
 	FORCEINLINE float GetFireDelay() const {return FireDelay;}
 
 	FORCEINLINE int32 GetMagazineAmmo() const {return MagazineAmmo;}
-	FORCEINLINE int32 GetCarriedAmmo() const { return CarriedAmmo; }
+	FORCEINLINE int32 GetCarriedAmmo() { return CarriedAmmo; }
+	FORCEINLINE void SetCarriedAmmo(int32 Ammo) { CarriedAmmo = Ammo; }
 };

@@ -248,19 +248,23 @@ void AShooterCharacter::FireTimerFinished()
 
 void AShooterCharacter::ReloadButtonPressed()
 {
-	GetWorldTimerManager().ClearTimer(FireTimer);
 	bCanFire = false;
-	if (EquippedWeapon)
+	if(EquippedWeapon && EquippedWeapon->GetCarriedAmmo() == 0 && EquippedWeapon->GetMagazineAmmo() > 0)
+	{
+		bCanFire = true;
+	}
+	if (EquippedWeapon->GetCarriedAmmo() == 0 && EquippedWeapon->GetMagazineAmmo() == 0)
+		return;
+	if (EquippedWeapon->GetCarriedAmmo() > 0)
 	{
 		ReloadWeapon();
 	}
+	GetWorldTimerManager().ClearTimer(FireTimer);
 }
 
 void AShooterCharacter::ReloadWeapon()
 {
 	bCanFire = false;
-	if (EquippedWeapon->GetCarriedAmmo() == 0)
-		return;
 	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && ReloadMontage)
 	{
