@@ -60,7 +60,7 @@ private:
 	EWeaponType WeaponType;
 
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
-	float FireDelay = 0.1f;
+	float FireDelay = 0.2f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponProperties", meta = (AllowPrivateAccess = "true"))
 	int32 MagazineAmmo = 30;
@@ -146,6 +146,7 @@ public:
 
 	FORCEINLINE bool GetAutomaticWeaponValue() const {return bAutomaticWeapon;}
 	FORCEINLINE float GetFireDelay() const {return FireDelay;}
+	FORCEINLINE void SetFireDelay(float Value) { FireDelay = Value; }
 
 	FORCEINLINE int32 GetMagazineAmmo() const {return MagazineAmmo;}
 	FORCEINLINE int32 GetCarriedAmmo() { return CarriedAmmo; }

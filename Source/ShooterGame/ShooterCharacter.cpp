@@ -135,15 +135,15 @@ void AShooterCharacter::CharacterJump()
 
 void AShooterCharacter::Sprint()
 {
-	if (GetCharacterMovement())
+	if (bUseSprint &&GetCharacterMovement())
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		GetCharacterMovement()->MaxWalkSpeed = 800.f;
 	}
 }
 
 void AShooterCharacter::StopSprint()
 {
-	if (GetCharacterMovement())
+	if (bUseSprint && GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
@@ -205,6 +205,18 @@ void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
 	}
 	SetEquippedWeapon(nullptr);
 	CombatState = ECombatState::ECS_Unoccupied;
+}
+
+void AShooterCharacter::InitialValues()
+{
+	if(GetCharacterMovement())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InitialValues"));
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		GetCharacterMovement()->JumpZVelocity = 600.f;
+		SetUseSprint(true);
+		EquippedWeapon->SetFireDelay(0.2f);
+	}
 }
 
 void AShooterCharacter::FireButtonPressed()

@@ -101,6 +101,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
 	float MaxShield = 100.f;
 
+	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
+	bool bUseSprint = true;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -166,6 +169,8 @@ public:
 	// Weapon Drop Functionality
 	void DropWeaponFromHands(AWeapon *WeaponToDrop);
 
+	void InitialValues();
+
 public:
 	/* ******************Getters And Setters****************** */
 
@@ -189,4 +194,7 @@ public:
 	FORCEINLINE float GetAO_Pitch() const {return AO_Pitch;}
 
 	FORCEINLINE FVector GetHitTarget() const { return HitTarget; }
+
+	FORCEINLINE bool GetUseSprint() const {return bUseSprint;}
+	FORCEINLINE void SetUseSprint(bool Value) {bUseSprint = Value;}
 };
