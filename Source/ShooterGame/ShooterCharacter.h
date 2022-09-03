@@ -162,6 +162,10 @@ protected:
 
 	void ReloadWeapon();
 
+	void SetMagazineHUDAmmo();
+
+	void SetCarriedHUDAmmo();
+
 public:
 	// Weapon Equipping Functionality
 	void AttachWeaponToHands(AWeapon *WeaponInHands);

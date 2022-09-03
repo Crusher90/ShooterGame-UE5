@@ -49,6 +49,11 @@ void AShooterCharacter::BeginPlay()
 		GetMesh()->HideBoneByName(FName("weapon"), EPhysBodyOp::PBO_None);
 		GetMesh()->HideBoneByName(FName("pistol"), EPhysBodyOp::PBO_None);
 	}
+	ShooterController = ShooterController == nullptr ? Cast<AShooterPlayerController>(Controller) : ShooterController;
+	if(ShooterController)
+	{
+		ShooterController->SetHUDHealth(Health, MaxHealth);
+	}
 }
 
 // Called every frame
@@ -135,7 +140,7 @@ void AShooterCharacter::CharacterJump()
 
 void AShooterCharacter::Sprint()
 {
-	if (bUseSprint &&GetCharacterMovement())
+	if (bUseSprint && GetCharacterMovement())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 800.f;
 	}
@@ -154,6 +159,8 @@ void AShooterCharacter::EquipButtonPressed()
 	if (OverlappingWeapon)
 	{
 		EquipWeapon(OverlappingWeapon);
+		SetMagazineHUDAmmo();
+		SetCarriedHUDAmmo();
 	}
 }
 
@@ -209,14 +216,16 @@ void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
 
 void AShooterCharacter::InitialValues()
 {
-	if(GetCharacterMovement())
+	if (GetCharacterMovement())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("InitialValues"));
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		GetCharacterMovement()->JumpZVelocity = 600.f;
 		SetUseSprint(true);
-		EquippedWeapon->SetFireDelay(0.2f
-		);
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->SetFireDelay(0.2f);
+		}
 	}
 }
 
@@ -237,6 +246,8 @@ void AShooterCharacter::FireButtonPressed()
 			TraceUnderCrosshair(HitResult);
 			EquippedWeapon->Fire(HitTarget);
 			PlayFireRifleMontage();
+			SetMagazineHUDAmmo();
+			SetCarriedHUDAmmo();
 			FireTimerStart();
 		}
 	}
@@ -262,7 +273,7 @@ void AShooterCharacter::FireTimerFinished()
 void AShooterCharacter::ReloadButtonPressed()
 {
 	bCanFire = false;
-	if(EquippedWeapon && EquippedWeapon->GetCarriedAmmo() == 0 && EquippedWeapon->GetMagazineAmmo() > 0)
+	if (EquippedWeapon && EquippedWeapon->GetCarriedAmmo() == 0 && EquippedWeapon->GetMagazineAmmo() > 0)
 	{
 		bCanFire = true;
 	}
@@ -288,11 +299,29 @@ void AShooterCharacter::ReloadWeapon()
 	GetWorldTimerManager().SetTimer(ReloadTimer, this, &ThisClass::AfterReloadMontage, 2.f);
 }
 
+void AShooterCharacter::SetMagazineHUDAmmo() 
+{
+	if (ShooterController && EquippedWeapon)
+	{
+		ShooterController->SetHUDMagazineAmmo(EquippedWeapon->GetMagazineAmmo());
+	}
+}
+
+void AShooterCharacter::SetCarriedHUDAmmo() 
+{
+	if (ShooterController && EquippedWeapon)
+	{
+		ShooterController->SetHUDCarriedAmmo(EquippedWeapon->GetCarriedAmmo());
+	}
+}
+
 void AShooterCharacter::AfterReloadMontage()
 {
 	EquippedWeapon->Reload();
 	bCanFire = true;
 	CombatState = ECombatState::ECS_Occupied;
+	SetMagazineHUDAmmo();
+	SetCarriedHUDAmmo();
 }
 
 void AShooterCharacter::FireButtonReleased()

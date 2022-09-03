@@ -39,7 +39,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
         break;
 
     case EBuffType::EBT_RapidFire :
-        if(ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_AssaultRifle || ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_SMG)
+        if(ShooterCharacter->GetEquippedWeapon() && (ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_AssaultRifle || ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_SMG))
         {
             ShooterCharacter->GetEquippedWeapon()->SetFireDelay(0.1f);
         }
