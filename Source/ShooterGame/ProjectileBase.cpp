@@ -21,7 +21,6 @@ AProjectileBase::AProjectileBase()
 	ProjectileBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	ProjectileBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	ProjectileBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-	ProjectileBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	ProjectileBox->SetEnableGravity(true);
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));

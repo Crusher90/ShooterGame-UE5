@@ -11,6 +11,7 @@
 #include "ShooterPlayerController.h"
 #include "ShooterHUD.h"
 #include "Kismet/GameplayStatics.h"
+#include "Enemy.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -39,7 +40,7 @@ AShooterCharacter::AShooterCharacter()
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 }
-
+  
 // Called when the game starts or when spawned
 void AShooterCharacter::BeginPlay()
 {
@@ -50,7 +51,7 @@ void AShooterCharacter::BeginPlay()
 		GetMesh()->HideBoneByName(FName("pistol"), EPhysBodyOp::PBO_None);
 	}
 	ShooterController = ShooterController == nullptr ? Cast<AShooterPlayerController>(Controller) : ShooterController;
-	if(ShooterController)
+	if (ShooterController)
 	{
 		ShooterController->SetHUDHealth(Health, MaxHealth);
 	}
@@ -299,7 +300,7 @@ void AShooterCharacter::ReloadWeapon()
 	GetWorldTimerManager().SetTimer(ReloadTimer, this, &ThisClass::AfterReloadMontage, 2.f);
 }
 
-void AShooterCharacter::SetMagazineHUDAmmo() 
+void AShooterCharacter::SetMagazineHUDAmmo()
 {
 	if (ShooterController && EquippedWeapon)
 	{
@@ -307,7 +308,7 @@ void AShooterCharacter::SetMagazineHUDAmmo()
 	}
 }
 
-void AShooterCharacter::SetCarriedHUDAmmo() 
+void AShooterCharacter::SetCarriedHUDAmmo()
 {
 	if (ShooterController && EquippedWeapon)
 	{
@@ -453,6 +454,11 @@ void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult)
 		else
 		{
 			HitTarget = TraceHitResult.ImpactPoint;
+		}
+		Enemy = Cast<AEnemy>(TraceHitResult.GetActor());
+		if(Enemy)
+		{
+			Enemy->SetBone(TraceHitResult.BoneName.ToString());
 		}
 	}
 }

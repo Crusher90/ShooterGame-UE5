@@ -69,6 +69,18 @@ private:
 
 	int32 MaxCarriedAmmo = 500;
 
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	float Damage = 5.f;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	float HeadShotDamage = 10.f;
+
+	UPROPERTY()
+	class AEnemy *Enemy;
+
+	UPROPERTY()
+	class AShooterPlayerController *ShooterController;
+
 protected:
 	/* ******************FUNCTIONS****************** */
 	// Sets the Weapon State
@@ -90,6 +102,10 @@ protected:
 
 	// Function for enabling Weapon collision after 1 sec
 	void DelayedDrop();
+
+	void ApplyDamage();
+
+	// const FVector& HitTarget
 
 	/* ******************VARIABLES****************** */
 	// Sound When Firing a Weapon

@@ -24,5 +24,4 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
             Beam->SetVectorParameter(FName("Target"), HitTarget);
         }
     }
-
 }

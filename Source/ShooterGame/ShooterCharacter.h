@@ -104,6 +104,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
 	bool bUseSprint = true;
 
+	UPROPERTY(VisibleAnywhere)
+	class AEnemy *Enemy;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -201,4 +204,6 @@ public:
 
 	FORCEINLINE bool GetUseSprint() const {return bUseSprint;}
 	FORCEINLINE void SetUseSprint(bool Value) {bUseSprint = Value;}
+
+	FORCEINLINE AEnemy *GetEnemy() const {return Enemy;}
 };

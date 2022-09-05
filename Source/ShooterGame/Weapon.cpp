@@ -10,6 +10,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Particles/ParticleSystem.h"
+#include "Enemy.h"
+#include "ShooterPlayerController.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -97,7 +99,7 @@ void AWeapon::OnWeaponStateSet()
 
 void AWeapon::WeaponEquippedState()
 {
-	if (WeaponBox)
+	if (WeaponBox) 
 	{
 		WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
@@ -135,7 +137,8 @@ void AWeapon::DelayedDrop()
 }
 
 void AWeapon::Fire(const FVector& HitTarget)
-{	
+{
+	Enemy = ShooterCharacter->GetEnemy();
 	const USkeletalMeshSocket *MuzzleFlashSocket = WeaponMesh->GetSocketByName("MuzzleFlash");
 	if(MuzzleFlashSocket && MuzzleFlashParticle)
 	{
@@ -149,6 +152,35 @@ void AWeapon::Fire(const FVector& HitTarget)
 		--MagazineAmmo;
 	else
 		MagazineAmmo = 0;
+	if(Enemy)
+	{
+		ApplyDamage();
+	}
+	
+}
+
+void AWeapon::ApplyDamage() 
+{
+	if(WeaponType == EWeaponType::EWT_AssaultRifle || WeaponType == EWeaponType::EWT_Pistol || WeaponType == EWeaponType::EWT_SMG || WeaponType == EWeaponType::EWT_SniperRifle)
+	{
+		if(ShooterCharacter && Enemy)
+		{
+			if (Enemy->GetBone() == FString("Spine2") || Enemy->GetBone() == FString("Head"))
+			{
+				UGameplayStatics::ApplyDamage(Enemy, HeadShotDamage, ShooterController, this, UDamageType::StaticClass());
+				UE_LOG(LogTemp, Warning, TEXT("DamageHeadApplied"));
+			}
+			else
+			{
+				UGameplayStatics::ApplyDamage(Enemy, Damage, ShooterController, this, UDamageType::StaticClass());
+				UE_LOG(LogTemp, Warning, TEXT("DamageBodyApplied"));
+			}
+		}
+	}
+	// else
+	// {
+	// 	UGameplayStatics::ApplyRadialDamageWithFalloff(this, Damage, Damage - 5.f, HitTarget, 50.f, 100.f, 10.f, UDamageType::StaticClass());
+	// }
 }
 
 void AWeapon::Reload() 
@@ -165,3 +197,4 @@ void AWeapon::Reload()
 		MagazineAmmo = MagazineAmmo + AmountToReload;
 	}
 }
+  
