@@ -2,13 +2,22 @@
 
 
 #include "Enemy.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 AEnemy::AEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
 }
 
 // Called when the game starts or when spawned
@@ -42,6 +51,18 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	{
 		Health -= DamageAmount;
 	}
+	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && HitReactMontage && bCanHitReact)
+	{
+		AnimInstance->Montage_Play(HitReactMontage, 2.5f);
+		bCanHitReact = false;
+		GetWorldTimerManager().SetTimer(HitReactTimer, this, &ThisClass::ResetHitReactValue, 1.f);
+	}
 	return DamageAmount;
+}
+
+void AEnemy::ResetHitReactValue() 
+{
+	bCanHitReact = true;
 }
 

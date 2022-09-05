@@ -28,6 +28,8 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	void ResetHitReactValue();
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	float Health = 100.f;
@@ -37,6 +39,13 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	FString Bone;
+
+	UPROPERTY(EditAnywhere, Category = "EnemProperties")
+	UAnimMontage *HitReactMontage;
+
+	FTimerHandle HitReactTimer;
+
+	bool bCanHitReact = true;
 
 public:
 	FORCEINLINE float GetHealth() const { return Health; }
