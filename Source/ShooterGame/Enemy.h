@@ -26,7 +26,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 
 	void ResetHitReactValue();
 
@@ -47,9 +47,38 @@ private:
 
 	bool bCanHitReact = true;
 
+	UPROPERTY(EditAnywhere, Category = "EnemyProperties")
+	class UBehaviorTree *BehaviorTree;
+
+	UPROPERTY(EditAnywhere, Category = "EnemyProperties", meta = (MakeEditWidget = "true"));
+	FVector PatrolPoint;
+
+	UPROPERTY(EditAnywhere, Category = "EnemyProperties", meta = (MakeEditWidget = "true"));
+	FVector PatrolPoint2;
+
+	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
+	class AEnemyController *EnemyController;
+
+	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
+	class UBoxComponent *AgroBox;
+
+	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
+	class AShooterCharacter *ShooterCharacter;
+
+protected:
+	UFUNCTION()
+	virtual void OnAgroBoxBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	UFUNCTION()
+	virtual void OnAgroBoxEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
+
+	void EnemyPatrol();
+
 public:
 	FORCEINLINE float GetHealth() const { return Health; }
-	FORCEINLINE FString GetBone() const {return Bone;}
+	FORCEINLINE FString GetBone() const { return Bone; }
 
 	FORCEINLINE void SetBone(FString Value) { Bone = Value; }
+
+	FORCEINLINE UBehaviorTree *GetBehaviorTree() const { return BehaviorTree; }
 };
