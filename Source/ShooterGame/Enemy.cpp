@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Enemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimMontage.h"
@@ -13,11 +12,13 @@
 #include "Components/BoxComponent.h"
 #include "ShooterCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemy::AEnemy()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
@@ -34,6 +35,19 @@ AEnemy::AEnemy()
 	AgroBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AgroBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	AgroBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+
+	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackSphere"));
+	AttackSphere->SetupAttachment(GetRootComponent());
+	AttackSphere->SetSphereRadius(100.f);
+	AttackSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AttackSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	AttackSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+
+	HandBox1 = CreateDefaultSubobject<UBoxComponent>(TEXT("HandBox1"));
+	HandBox1->SetupAttachment(GetMesh(), FName("RightHand"));
+	HandBox1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HandBox1->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	HandBox1->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 }
 
 // Called when the game starts or when spawned
@@ -48,76 +62,145 @@ void AEnemy::BeginPlay()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	AgroBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnAgroBoxBeginOverlap);
+	AgroBox->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnAgroBoxEndOverlap);
+
+	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnAttackSphereBeginOverlap);
+	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnAttackSphereEndOverlap);
+
+	HandBox1->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnHandBox1BeginOverlap);
+	HandBox1->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnHandBox1EndOverlap);
 
 	EnemyPatrol();
-
-	EnemyController->RunBehaviorTree(GetBehaviorTree());
 }
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AEnemy::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
-float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) 
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
 {
-	if(Health - DamageAmount <= 0.f)
+	if (Health - DamageAmount <= 0.f)
 	{
 		Health = 0.f;
+		if(bDie)
+		{
+			return 0.f;
+		}
+		Death();
 	}
 	else
 	{
 		Health -= DamageAmount;
 	}
 	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
-	if(AnimInstance && HitReactMontage && bCanHitReact)
+	if (AnimInstance && HitReactMontage && bCanHitReact)
 	{
 		AnimInstance->Montage_Play(HitReactMontage, 2.5f);
 		bCanHitReact = false;
+		EnemyStun();
 		GetWorldTimerManager().SetTimer(HitReactTimer, this, &ThisClass::ResetHitReactValue, 1.f);
+		if (EnemyController)
+		{
+			EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("EnemyStun"), bStunned);
+		}
 	}
 	return DamageAmount;
 }
 
-void AEnemy::ResetHitReactValue() 
+void AEnemy::ResetHitReactValue()
 {
 	bCanHitReact = true;
-}
-
-void AEnemy::OnAgroBoxBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) 
-{
-	if(OtherActor)
+	bStunned = false;
+	if (EnemyController)
 	{
-		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
-		if(ShooterCharacter)
-		{
-			EnemyController->GetBlackboardComponent()->SetValueAsObject(FName("Target"), ShooterCharacter);
-		}
+		EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("EnemyStun"), bStunned);
 	}
 }
 
-void AEnemy::OnAgroBoxEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex) 
+void AEnemy::OnAgroBoxBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
 	if (OtherActor)
 	{
 		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
 		if (ShooterCharacter)
 		{
-			EnemyPatrol();
+			EnemyController->GetBlackboardComponent()->SetValueAsObject(FName("Target"), ShooterCharacter);
 		}
 	}
 }
 
-void AEnemy::EnemyPatrol() 
+void AEnemy::OnAgroBoxEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor)
+	{
+		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
+		if (ShooterCharacter)
+		{
+		}
+	}
+}
+
+void AEnemy::OnAttackSphereBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
+{
+	if (OtherActor)
+	{
+		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
+		if (ShooterCharacter)
+		{
+			bAttack = true;
+			// HandBox1->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Attack"), bAttack);
+		}
+	}
+}
+
+void AEnemy::OnAttackSphereEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor)
+	{
+		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
+		if (ShooterCharacter)
+		{
+			bAttack = false;
+			// HandBox1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Attack"), bAttack);
+		}
+	}
+}
+
+void AEnemy::OnHandBox1BeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
+{
+	if (OtherActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DamageApply"));
+		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
+		if (ShooterCharacter)
+		{
+			UGameplayStatics::ApplyDamage(ShooterCharacter, Damage, EnemyController, this, UDamageType::StaticClass());
+		}
+	}
+}
+
+void AEnemy::OnHandBox1EndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor)
+	{
+		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
+		if (ShooterCharacter)
+		{
+		}
+	}
+}
+
+void AEnemy::EnemyPatrol()
 {
 	const FVector WorldPatrolPoint = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint);
 	const FVector WorldPatrolPoint2 = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint2);
@@ -130,5 +213,65 @@ void AEnemy::EnemyPatrol()
 		EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint"), WorldPatrolPoint);
 		EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint2"), WorldPatrolPoint2);
 	}
+	EnemyController->RunBehaviorTree(GetBehaviorTree());
 }
 
+void AEnemy::EnemyStun()
+{
+	float Stun = FMath::RandRange(0.f, 1.f);
+	if (Stun <= StunChance)
+	{
+		bStunned = true;
+	}
+}
+
+void AEnemy::PlayAttackMontage()
+{
+	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AttackMontage)
+	{
+		int32 RandomMontage = FMath::RandRange(0, 2);
+		switch (RandomMontage)
+		{
+		case 1:
+			AnimInstance->Montage_Play(AttackMontage);
+			AnimInstance->Montage_JumpToSection(FName("Attack1"));
+			break;
+
+		case 2:
+			AnimInstance->Montage_Play(AttackMontage);
+			AnimInstance->Montage_JumpToSection(FName("Attack2"));
+			break;
+
+		case 3:
+			AnimInstance->Montage_Play(AttackMontage);
+			AnimInstance->Montage_JumpToSection(FName("Attack3"));
+			break;
+		}
+	}
+}
+
+void AEnemy::Death() 
+{
+	bDie = true;
+	EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), bDie);
+	StunChance = -1;
+	bCanHitReact = false;
+	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance && DeathMontage)
+	{
+		AnimInstance->Montage_Play(DeathMontage);
+	}
+	FTimerHandle DestroyTimer;
+	GetWorldTimerManager().SetTimer(DestroyTimer, this, &ThisClass::DestroyEnemy, 10.f);
+}
+
+void AEnemy::DestroyEnemy() 
+{
+	Destroy();
+}
+
+void AEnemy::Destroyed() 
+{
+	Super::Destroyed();
+}

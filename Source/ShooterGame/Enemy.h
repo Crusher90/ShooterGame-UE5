@@ -43,6 +43,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "EnemProperties")
 	UAnimMontage *HitReactMontage;
 
+	UPROPERTY(EditAnywhere, Category = "EnemProperties")
+	UAnimMontage *AttackMontage;
+	
+	UPROPERTY(EditAnywhere, Category = "EnemProperties")
+	UAnimMontage *DeathMontage;
+
 	FTimerHandle HitReactTimer;
 
 	bool bCanHitReact = true;
@@ -63,16 +69,60 @@ private:
 	class UBoxComponent *AgroBox;
 
 	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
+	class USphereComponent *AttackSphere;
+
+	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
 	class AShooterCharacter *ShooterCharacter;
+
+	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
+	float StunChance = 0.3f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
+	bool bStunned = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
+	bool bAttack = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent *HandBox1;
+
+	UPROPERTY(EditAnywhere, Category = "EnemyProperties")
+	float Damage = 5.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
+	bool bDie = false;
 
 protected:
 	UFUNCTION()
-	virtual void OnAgroBoxBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+	virtual void OnAgroBoxBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 	UFUNCTION()
 	virtual void OnAgroBoxEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	virtual void OnAttackSphereBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	UFUNCTION()
+	virtual void OnAttackSphereEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	virtual void OnHandBox1BeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	UFUNCTION()
+	virtual void OnHandBox1EndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
+
 	void EnemyPatrol();
+
+	void EnemyStun();
+
+	UFUNCTION(BlueprintCallable, Category = "EnemyProperties")
+	void PlayAttackMontage();
+
+	void Death();
+
+	void DestroyEnemy();
+
+	virtual void Destroyed() override;
 
 public:
 	FORCEINLINE float GetHealth() const { return Health; }
@@ -81,4 +131,6 @@ public:
 	FORCEINLINE void SetBone(FString Value) { Bone = Value; }
 
 	FORCEINLINE UBehaviorTree *GetBehaviorTree() const { return BehaviorTree; }
+
+	FORCEINLINE bool GetAttack() const { return bAttack; }
 };
