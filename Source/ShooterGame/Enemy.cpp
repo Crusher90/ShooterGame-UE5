@@ -180,7 +180,6 @@ void AEnemy::OnHandBox1BeginOverlap(UPrimitiveComponent *OverlappedComponent, AA
 {
 	if (OtherActor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("DamageApply"));
 		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
 		if (ShooterCharacter)
 		{

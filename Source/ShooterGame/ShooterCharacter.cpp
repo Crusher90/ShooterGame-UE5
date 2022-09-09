@@ -219,7 +219,6 @@ void AShooterCharacter::InitialValues()
 {
 	if (GetCharacterMovement())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InitialValues"));
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		GetCharacterMovement()->JumpZVelocity = 600.f;
 		SetUseSprint(true);

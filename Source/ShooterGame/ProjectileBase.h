@@ -57,6 +57,8 @@ protected:
 
 	void DestroyProjectile();
 
+	void ExplodeDamage();
+
 public:
 	virtual void Destroyed() override;
 };

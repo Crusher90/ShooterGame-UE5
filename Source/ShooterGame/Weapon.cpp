@@ -156,10 +156,9 @@ void AWeapon::Fire(const FVector& HitTarget)
 	{
 		ApplyDamage();
 	}
-	
 }
 
-void AWeapon::ApplyDamage() 
+void AWeapon::ApplyDamage()
 {
 	if(WeaponType == EWeaponType::EWT_AssaultRifle || WeaponType == EWeaponType::EWT_Pistol || WeaponType == EWeaponType::EWT_SMG || WeaponType == EWeaponType::EWT_SniperRifle)
 	{
@@ -168,19 +167,13 @@ void AWeapon::ApplyDamage()
 			if (Enemy->GetBone() == FString("Spine2") || Enemy->GetBone() == FString("Head"))
 			{
 				UGameplayStatics::ApplyDamage(Enemy, HeadShotDamage, ShooterController, this, UDamageType::StaticClass());
-				UE_LOG(LogTemp, Warning, TEXT("DamageHeadApplied"));
 			}
 			else
 			{
 				UGameplayStatics::ApplyDamage(Enemy, Damage, ShooterController, this, UDamageType::StaticClass());
-				UE_LOG(LogTemp, Warning, TEXT("DamageBodyApplied"));
 			}
 		}
 	}
-	// else
-	// {
-	// 	UGameplayStatics::ApplyRadialDamageWithFalloff(this, Damage, Damage - 5.f, HitTarget, 50.f, 100.f, 10.f, UDamageType::StaticClass());
-	// }
 }
 
 void AWeapon::Reload() 

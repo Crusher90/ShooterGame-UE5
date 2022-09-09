@@ -167,4 +167,7 @@ public:
 	FORCEINLINE int32 GetMagazineAmmo() const {return MagazineAmmo;}
 	FORCEINLINE int32 GetCarriedAmmo() { return CarriedAmmo; }
 	FORCEINLINE void SetCarriedAmmo(int32 Ammo) { CarriedAmmo = Ammo; }
+
+	FORCEINLINE float GetDamage() const {return Damage;}
+	FORCEINLINE float GetHeadShotDamage() const {return HeadShotDamage;}
 };

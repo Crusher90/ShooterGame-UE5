@@ -7,7 +7,7 @@
 #include "EnemyController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class SHOOTERGAME_API AEnemyController : public AAIController
