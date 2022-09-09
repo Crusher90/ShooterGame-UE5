@@ -234,6 +234,7 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &Dama
 	if(Health - DamageAmount <= 0.f)
 	{
 		Health = 0.f;
+		Die();
 	}
 	else
 	{
@@ -327,6 +328,13 @@ void AShooterCharacter::SetCarriedHUDAmmo()
 	{
 		ShooterController->SetHUDCarriedAmmo(EquippedWeapon->GetCarriedAmmo());
 	}
+}
+
+void AShooterCharacter::Die() 
+{
+	bDie = true;
+	DisableInput(ShooterController);
+	Destroy();
 }
 
 void AShooterCharacter::AfterReloadMontage()

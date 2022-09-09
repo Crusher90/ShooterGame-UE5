@@ -77,7 +77,6 @@ void AProjectileBase::Destroyed()
 {
 	Super::Destroyed();
 
-	ExplodeDamage();
 	if (BulletImpactParticles)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BulletImpactParticles, GetActorLocation());
@@ -86,4 +85,8 @@ void AProjectileBase::Destroyed()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 	}
+	if(WeaponType == EWeaponType::EWT_AssaultRifle)
+		return;
+
+	ExplodeDamage();
 }

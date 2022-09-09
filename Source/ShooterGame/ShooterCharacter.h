@@ -107,6 +107,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class AEnemy *Enemy;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
+	bool bDie = false;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -169,6 +172,8 @@ protected:
 
 	void SetCarriedHUDAmmo();
 
+	void Die();
+
 public:
 	// Weapon Equipping Functionality
 	void AttachWeaponToHands(AWeapon *WeaponInHands);
@@ -208,4 +213,5 @@ public:
 	FORCEINLINE void SetUseSprint(bool Value) {bUseSprint = Value;}
 
 	FORCEINLINE AEnemy *GetEnemy() const {return Enemy;}
+	FORCEINLINE bool GetDie() const {return bDie;}
 };

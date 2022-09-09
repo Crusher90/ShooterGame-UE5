@@ -71,7 +71,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
 	class USphereComponent *AttackSphere;
 
-	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
 	class AShooterCharacter *ShooterCharacter;
 
 	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")

@@ -181,7 +181,7 @@ void AEnemy::OnHandBox1BeginOverlap(UPrimitiveComponent *OverlappedComponent, AA
 	if (OtherActor)
 	{
 		ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
-		if (ShooterCharacter)
+		if (ShooterCharacter && !ShooterCharacter->GetDie())
 		{
 			UGameplayStatics::ApplyDamage(ShooterCharacter, Damage, EnemyController, this, UDamageType::StaticClass());
 		}
@@ -257,9 +257,30 @@ void AEnemy::Death()
 	StunChance = -1;
 	bCanHitReact = false;
 	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
-	if(AnimInstance && DeathMontage)
+	int32 SectionNumber = FMath::RandRange(0, 1);
+	switch (SectionNumber)
 	{
-		AnimInstance->Montage_Play(DeathMontage);
+	case 0:
+		if(SectionNumber == 1)
+		{
+			if (AnimInstance && DeathMontage)
+			{
+				AnimInstance->Montage_Play(DeathMontage);
+				AnimInstance->Montage_JumpToSection(FName("Death1"), DeathMontage);
+			}
+		}
+		break;
+
+	case 1:
+		if (SectionNumber == 1)
+		{
+			if (AnimInstance && DeathMontage)
+			{
+				AnimInstance->Montage_Play(DeathMontage);
+				AnimInstance->Montage_JumpToSection(FName("Death2"), DeathMontage);
+			}
+		}
+		break;
 	}
 	FTimerHandle DestroyTimer;
 	GetWorldTimerManager().SetTimer(DestroyTimer, this, &ThisClass::DestroyEnemy, 10.f);
