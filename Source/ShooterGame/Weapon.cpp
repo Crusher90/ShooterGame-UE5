@@ -152,7 +152,7 @@ void AWeapon::Fire(const FVector& HitTarget)
 		--MagazineAmmo;
 	else
 		MagazineAmmo = 0;
-	if(Enemy)
+	if(Enemy && !Enemy->GetDie())
 	{
 		ApplyDamage();
 	}

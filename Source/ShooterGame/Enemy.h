@@ -74,8 +74,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
 	class AShooterCharacter *ShooterCharacter;
 
-	UPROPERTY(VisibleAnywhere, Category = "EnemyProperties")
-	float StunChance = 0.3f;
+	UPROPERTY(EditAnywhere, Category = "EnemyProperties")
+	float StunChance = 0.4f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
 	bool bStunned = false;
@@ -133,4 +133,5 @@ public:
 	FORCEINLINE UBehaviorTree *GetBehaviorTree() const { return BehaviorTree; }
 
 	FORCEINLINE bool GetAttack() const { return bAttack; }
+	FORCEINLINE bool GetDie() const { return bDie; }
 };

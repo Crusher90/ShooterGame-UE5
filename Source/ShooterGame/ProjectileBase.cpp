@@ -52,13 +52,10 @@ void AProjectileBase::Tick(float DeltaTime)
 
 void AProjectileBase::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit)
 {
-	if (WeaponType == EWeaponType::EWT_GrenadeLauncher || WeaponType == EWeaponType::EWT_RocketLauncher)
+	if (WeaponType == EWeaponType::EWT_GrenadeLauncher)
 	{
-		if (WeaponType == EWeaponType::EWT_GrenadeLauncher)
-		{
-			GetWorldTimerManager().SetTimer(GrenadeDestroyTimer, this, &ThisClass::DestroyProjectile, GrenadeDestroyTime);
-			return;
-		}
+		GetWorldTimerManager().SetTimer(GrenadeDestroyTimer, this, &ThisClass::DestroyProjectile, GrenadeDestroyTime);
+		return;
 	}
 	DestroyProjectile();
 }
@@ -70,7 +67,11 @@ void AProjectileBase::DestroyProjectile()
 
 void AProjectileBase::ExplodeDamage() 
 {
-	UGameplayStatics::ApplyRadialDamageWithFalloff(this, 200.f, 80.f, GetActorLocation(), 200.f, 400.f, 1.f, UDamageType::StaticClass(), TArray<AActor *>(), this);
+	if (WeaponType == EWeaponType::EWT_GrenadeLauncher || WeaponType == EWeaponType::EWT_RocketLauncher)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Explode"));
+		UGameplayStatics::ApplyRadialDamageWithFalloff(this, 200.f, 80.f, GetActorLocation(), 200.f, 400.f, 1.f, UDamageType::StaticClass(), TArray<AActor *>(), this);
+	}
 }
 
 void AProjectileBase::Destroyed()
@@ -85,8 +86,5 @@ void AProjectileBase::Destroyed()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 	}
-	if(WeaponType == EWeaponType::EWT_AssaultRifle)
-		return;
-
 	ExplodeDamage();
 }

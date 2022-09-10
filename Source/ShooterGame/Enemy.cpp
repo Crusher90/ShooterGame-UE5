@@ -90,26 +90,25 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AC
 	if (Health - DamageAmount <= 0.f)
 	{
 		Health = 0.f;
-		if(bDie)
-		{
-			return 0.f;
-		}
 		Death();
 	}
 	else
 	{
 		Health -= DamageAmount;
-	}
-	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && HitReactMontage && bCanHitReact)
-	{
-		AnimInstance->Montage_Play(HitReactMontage, 2.5f);
-		bCanHitReact = false;
-		EnemyStun();
-		GetWorldTimerManager().SetTimer(HitReactTimer, this, &ThisClass::ResetHitReactValue, 1.f);
-		if (EnemyController)
+		UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && HitReactMontage && bCanHitReact)
 		{
-			EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("EnemyStun"), bStunned);
+			AnimInstance->Montage_Play(HitReactMontage, 2.5f);
+			bCanHitReact = false;
+			if(Health > 0)
+			{
+				EnemyStun();
+				if (EnemyController)
+				{
+					EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("EnemyStun"), bStunned);
+				}
+			}
+			GetWorldTimerManager().SetTimer(HitReactTimer, this, &ThisClass::ResetHitReactValue, 1.f);
 		}
 	}
 	return DamageAmount;
@@ -218,7 +217,7 @@ void AEnemy::EnemyPatrol()
 void AEnemy::EnemyStun()
 {
 	float Stun = FMath::RandRange(0.f, 1.f);
-	if (Stun <= StunChance)
+	if (Stun < StunChance)
 	{
 		bStunned = true;
 	}
@@ -250,48 +249,43 @@ void AEnemy::PlayAttackMontage()
 	}
 }
 
-void AEnemy::Death() 
+void AEnemy::Death()
 {
+	UE_LOG(LogTemp, Warning, TEXT("DieMontage"));
 	bDie = true;
-	EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), bDie);
-	StunChance = -1;
 	bCanHitReact = false;
 	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
 	int32 SectionNumber = FMath::RandRange(0, 1);
 	switch (SectionNumber)
 	{
 	case 0:
-		if(SectionNumber == 1)
+		if (AnimInstance && DeathMontage)
 		{
-			if (AnimInstance && DeathMontage)
-			{
-				AnimInstance->Montage_Play(DeathMontage);
-				AnimInstance->Montage_JumpToSection(FName("Death1"), DeathMontage);
-			}
+			AnimInstance->Montage_Play(DeathMontage);
+			AnimInstance->Montage_JumpToSection(FName("Death1"), DeathMontage);
 		}
 		break;
 
 	case 1:
-		if (SectionNumber == 1)
+		if (AnimInstance && DeathMontage)
 		{
-			if (AnimInstance && DeathMontage)
-			{
-				AnimInstance->Montage_Play(DeathMontage);
-				AnimInstance->Montage_JumpToSection(FName("Death2"), DeathMontage);
-			}
+			AnimInstance->Montage_Play(DeathMontage);
+			AnimInstance->Montage_JumpToSection(FName("Death2"), DeathMontage);
+			
 		}
 		break;
 	}
+	EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), bDie);
 	FTimerHandle DestroyTimer;
 	GetWorldTimerManager().SetTimer(DestroyTimer, this, &ThisClass::DestroyEnemy, 10.f);
 }
 
-void AEnemy::DestroyEnemy() 
+void AEnemy::DestroyEnemy()
 {
 	Destroy();
 }
 
-void AEnemy::Destroyed() 
+void AEnemy::Destroyed()
 {
 	Super::Destroyed();
 }
