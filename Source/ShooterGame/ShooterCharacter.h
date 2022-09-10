@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CombatState.h"
 #include "TurningInPlace.h"
+#include "WeaponTypes.h"
 #include "ShooterCharacter.generated.h"
 
 #define TRACE_LENGTH 100000.f
@@ -201,6 +202,9 @@ public:
 	void InitialValues();
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowSniperScopeWidget(bool bShowScope);
 
 public:
 	/* ******************Getters And Setters****************** */

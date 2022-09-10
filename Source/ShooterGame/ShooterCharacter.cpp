@@ -129,6 +129,10 @@ void AShooterCharacter::AimButtonPressed()
 	if (EquippedWeapon == nullptr)
 		return;
 	bAim = !bAim;
+	if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
+	{
+		ShowSniperScopeWidget(bAim);
+	}
 }
 
 void AShooterCharacter::Aim(float DeltaTime)
