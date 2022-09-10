@@ -69,7 +69,6 @@ void AProjectileBase::ExplodeDamage()
 {
 	if (WeaponType == EWeaponType::EWT_GrenadeLauncher || WeaponType == EWeaponType::EWT_RocketLauncher)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Explode"));
 		UGameplayStatics::ApplyRadialDamageWithFalloff(this, 200.f, 80.f, GetActorLocation(), 200.f, 400.f, 1.f, UDamageType::StaticClass(), TArray<AActor *>(), this);
 	}
 }

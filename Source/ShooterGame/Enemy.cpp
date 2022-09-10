@@ -251,7 +251,6 @@ void AEnemy::PlayAttackMontage()
 
 void AEnemy::Death()
 {
-	UE_LOG(LogTemp, Warning, TEXT("DieMontage"));
 	bDie = true;
 	bCanHitReact = false;
 	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();

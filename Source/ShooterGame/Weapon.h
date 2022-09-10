@@ -81,6 +81,12 @@ private:
 	UPROPERTY()
 	class AShooterPlayerController *ShooterController;
 
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	float ZoomedFOV = 30.f;
+
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	float ZoomInterpSpeed = 20.f;
+
 protected:
 	/* ******************FUNCTIONS****************** */
 	// Sets the Weapon State
@@ -170,4 +176,7 @@ public:
 
 	FORCEINLINE float GetDamage() const {return Damage;}
 	FORCEINLINE float GetHeadShotDamage() const {return HeadShotDamage;}
+
+	FORCEINLINE float GetZoomFOV() const { return ZoomedFOV; }
+	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
 };

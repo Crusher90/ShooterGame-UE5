@@ -55,6 +55,8 @@ void AShooterCharacter::BeginPlay()
 	{
 		ShooterController->SetHUDHealth(Health, MaxHealth);
 	}
+	DefaultFOV = FollowCamera->FieldOfView;
+	CurrentFOV = DefaultFOV;
 }
 
 // Called every frame
@@ -63,6 +65,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	AimOffset(DeltaTime);
 	SetCrosshairToScreen(DeltaTime);
+	Aim(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -84,6 +87,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Pressed, this, &ThisClass::FireButtonPressed);
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ThisClass::FireButtonReleased);
 	PlayerInputComponent->BindAction(FName("Reload"), EInputEvent::IE_Pressed, this, &ThisClass::ReloadButtonPressed);
+	PlayerInputComponent->BindAction(FName("Aiming"), EInputEvent::IE_Pressed, this, &ThisClass::AimButtonPressed);
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -118,6 +122,33 @@ void AShooterCharacter::LookUp(float Value)
 void AShooterCharacter::LookRight(float Value)
 {
 	AddControllerYawInput(Value * Sensitivity * GetWorld()->GetDeltaSeconds());
+}
+
+void AShooterCharacter::AimButtonPressed()
+{
+	if (EquippedWeapon == nullptr)
+		return;
+	bAim = !bAim;
+}
+
+void AShooterCharacter::Aim(float DeltaTime)
+{
+	if(EquippedWeapon == nullptr)
+		return;
+	if(FollowCamera)
+	{
+		if(bAim)
+		{
+			// FollowCamera->SetFieldOfView(45.f);
+			CurrentFOV = FMath::FInterpTo(CurrentFOV, EquippedWeapon->GetZoomFOV(), DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
+		}
+		else
+		{
+			// FollowCamera->SetFieldOfView(90.f);
+			CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
+		}
+		FollowCamera->SetFieldOfView(CurrentFOV);
+	}
 }
 
 void AShooterCharacter::CrouchButtonPressed()

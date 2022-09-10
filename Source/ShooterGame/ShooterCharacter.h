@@ -110,6 +110,19 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
 	bool bDie = false;
 
+	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
+	bool bAim = false;
+
+	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
+	float ZoomInterpSpeed = 20.f;
+
+	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
+	float ZoomedFOV;
+
+	float DefaultFOV;
+
+	float CurrentFOV;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -148,6 +161,8 @@ protected:
 	// Function Call Fire Button is Pressed
 	void FireButtonReleased();
 
+	void AimButtonPressed();
+
 	void AimOffset(float DeltaTime);
 
 	void TurnInPlace(float DeltaTime);
@@ -173,6 +188,8 @@ protected:
 	void SetCarriedHUDAmmo();
 
 	void Die();
+
+	void Aim(float DeltaTime);
 
 public:
 	// Weapon Equipping Functionality

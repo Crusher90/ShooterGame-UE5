@@ -53,7 +53,6 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 			FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation);
 			DeltaRotation = FMath::RInterpTo(DeltaRotation, DeltaRot, DeltaTime, 10.f);
 			YawOffset = DeltaRotation.Yaw;
-			// UE_LOG(LogTemp, Warning, TEXT("OffsetYaw %f"), YawOffset);
 
 			AO_Yaw = ShooterCharacter->GetAO_Yaw();
 
@@ -72,8 +71,8 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 				FTransform MuzzleTipTransform = EquippedWeapon->GetWeaponMesh()->GetSocketTransform(FName("MuzzleFlash"), ERelativeTransformSpace::RTS_World);
 				FVector MuzzleX(FRotationMatrix(MuzzleTipTransform.GetRotation().Rotator()).GetUnitAxis(EAxis::X));
-				DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), MuzzleTipTransform.GetLocation() + MuzzleX * 100000.f, FColor::Red);
-				DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), ShooterCharacter->GetHitTarget(), FColor::Orange);
+				// DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), MuzzleTipTransform.GetLocation() + MuzzleX * 100000.f, FColor::Red);
+				// DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), ShooterCharacter->GetHitTarget(), FColor::Orange);
 
 				FTransform RightHandTransform = ShooterCharacter->GetMesh()->GetSocketTransform(FName("hand_r"));
 				RightHandRotation = UKismetMathLibrary::FindLookAtRotation(RightHandTransform.GetLocation(), RightHandTransform.GetLocation() + (RightHandTransform.GetLocation() - ShooterCharacter->GetHitTarget()));
