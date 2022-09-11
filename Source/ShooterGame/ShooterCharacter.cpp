@@ -40,7 +40,7 @@ AShooterCharacter::AShooterCharacter()
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 }
-  
+
 // Called when the game starts or when spawned
 void AShooterCharacter::BeginPlay()
 {
@@ -137,14 +137,15 @@ void AShooterCharacter::AimButtonPressed()
 
 void AShooterCharacter::Aim(float DeltaTime)
 {
-	if(EquippedWeapon == nullptr)
+	if (EquippedWeapon == nullptr)
 		return;
-	if(FollowCamera)
+	if (FollowCamera)
 	{
-		if(bAim)
+		if (bAim)
 		{
 			// FollowCamera->SetFieldOfView(45.f);
 			CurrentFOV = FMath::FInterpTo(CurrentFOV, EquippedWeapon->GetZoomFOV(), DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
+			StopSprint();
 		}
 		else
 		{
@@ -178,7 +179,7 @@ void AShooterCharacter::Sprint()
 {
 	if (bUseSprint && GetCharacterMovement())
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 800.f;
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	}
 }
 
@@ -264,9 +265,9 @@ void AShooterCharacter::InitialValues()
 	}
 }
 
-float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) 
+float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
 {
-	if(Health - DamageAmount <= 0.f)
+	if (Health - DamageAmount <= 0.f)
 	{
 		Health = 0.f;
 		Die();
@@ -365,7 +366,7 @@ void AShooterCharacter::SetCarriedHUDAmmo()
 	}
 }
 
-void AShooterCharacter::Die() 
+void AShooterCharacter::Die()
 {
 	bDie = true;
 	DisableInput(ShooterController);
@@ -512,7 +513,7 @@ void AShooterCharacter::TraceUnderCrosshair(FHitResult &TraceHitResult)
 			HitTarget = TraceHitResult.ImpactPoint;
 		}
 		Enemy = Cast<AEnemy>(TraceHitResult.GetActor());
-		if(Enemy)
+		if (Enemy)
 		{
 			Enemy->SetBone(TraceHitResult.BoneName.ToString());
 		}

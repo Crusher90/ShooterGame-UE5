@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "Weapon.h"
+#include "ShooterPlayerController.h"
 
 // Sets default values
 APickup::APickup()
@@ -54,6 +55,10 @@ void APickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComponen
 		if (ShooterCharacter)
 		{
 			Destroy();
+			if(ShooterCharacter->GetEquippedWeapon())
+			{
+				ShooterCharacter->GetShooterController()->SetHUDCarriedAmmo(ShooterCharacter->GetEquippedWeapon()->GetCarriedAmmo());
+			}
 		}
 	}
 }

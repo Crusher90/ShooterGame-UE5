@@ -27,13 +27,13 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
     {
     case EBuffType::EBT_Jump:
         UE_LOG(LogTemp, Warning, TEXT("Jump"));
-        ShooterCharacter->GetCharacterMovement()->JumpZVelocity = 2000.f;
+        ShooterCharacter->GetCharacterMovement()->JumpZVelocity = 1000.f;
         break;
 
     case EBuffType::EBT_Speed:
         UE_LOG(LogTemp, Warning, TEXT("Speed"));
         ShooterCharacter->SetUseSprint(false);
-        ShooterCharacter->GetCharacterMovement()->MaxWalkSpeed = 3000.f;
+        ShooterCharacter->GetCharacterMovement()->MaxWalkSpeed = 1000.f;
         break;
 
     case EBuffType::EBT_RapidFire:

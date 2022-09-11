@@ -235,4 +235,6 @@ public:
 
 	FORCEINLINE AEnemy *GetEnemy() const {return Enemy;}
 	FORCEINLINE bool GetDie() const {return bDie;}
+
+	FORCEINLINE AShooterPlayerController *GetShooterController() const { return ShooterController; }
 };
