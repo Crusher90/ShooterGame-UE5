@@ -45,6 +45,7 @@ void AWeapon::BeginPlay()
 
 	WeaponBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnWeaponBoxBeginOverlap);
 	WeaponBox->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnWeaponBoxEndOverlap);
+	PickupWidget->SetVisibility(false);
 }
 
 // Called every frame
@@ -61,6 +62,7 @@ void AWeapon::OnWeaponBoxBeginOverlap(UPrimitiveComponent *OverlappedComponent, 
 		if (ShooterCharacter)
 		{
 			ShooterCharacter->SetOverlappingWeapon(this);
+			PickupWidget->SetVisibility(true);
 		}
 	}
 }
@@ -73,6 +75,7 @@ void AWeapon::OnWeaponBoxEndOverlap(UPrimitiveComponent *OverlappedComponent, AA
 		if (ShooterCharacter)
 		{
 			ShooterCharacter->SetOverlappingWeapon(nullptr);
+			PickupWidget->SetVisibility(false);
 		}
 	}
 }

@@ -41,7 +41,7 @@ private:
 	class UCameraComponent *FollowCamera;
 
 	// Weapon That We Are Currently Overlapping with
-	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
 	class AWeapon *OverlappingWeapon;
 
 	// Currently Equipped Weapon in our Hands
