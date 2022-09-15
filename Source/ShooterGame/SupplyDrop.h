@@ -48,10 +48,19 @@ private:
 	class USoundCue *DestroyDropSound;
 
 	UPROPERTY(EditAnywhere, Category = "SupplyDrop")
-	TSubclassOf<class APickup> BuffPickupClass;
-
-	UPROPERTY(EditAnywhere, Category = "SupplyDrop")
 	TSubclassOf<class APickup> AmmoPickupClass;
+
+	UPROPERTY()
+	class ABuffPickup *BuffPickup;
+
+	UPROPERTY()
+	class AWeapon *Weapon;
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<ABuffPickup>> BuffPickupClasses;
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<AWeapon>> WeaponClasses;
 
 protected:
 	UFUNCTION()
@@ -62,7 +71,8 @@ protected:
 
 	virtual void Destroyed() override;
 
-	void SpawnPickups();
+	void SpawnItems();
 
 	FVector RandomLocation();
+
 };

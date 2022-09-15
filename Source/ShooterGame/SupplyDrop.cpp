@@ -9,6 +9,8 @@
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pickup.h"
+#include "BuffPickup.h"
+#include "Weapon.h"
 
 // Sets default values
 ASupplyDrop::ASupplyDrop()
@@ -90,18 +92,31 @@ void ASupplyDrop::Destroyed()
 	}
 }
 
-void ASupplyDrop::SpawnPickups()
+void ASupplyDrop::SpawnItems()
 {
-	if (AmmoPickupClass && BuffPickupClass)
-		GetWorld()->SpawnActor<APickup>(BuffPickupClass, GetActorLocation() + RandomLocation(), GetActorRotation());
-	for (int i = 0; i < 4; i++)
+	int32 NumBuffPickupClass = BuffPickupClasses.Num();
+	if (NumBuffPickupClass > 0)
 	{
-		GetWorld()->SpawnActor<APickup>(AmmoPickupClass, GetActorLocation() + RandomLocation(), GetActorRotation());
-		UE_LOG(LogTemp, Warning, TEXT("SpawnPickups"));
+		int32 Value = FMath::RandRange(0, NumBuffPickupClass - 1);
+		BuffPickup = GetWorld()->SpawnActor<ABuffPickup>(BuffPickupClasses[Value], GetActorLocation() + RandomLocation(), GetActorRotation());
+	}
+	int32 NumWeaponClass = WeaponClasses.Num();
+	if (NumWeaponClass > 0)
+	{
+		int32 Value = FMath::RandRange(0, NumWeaponClass - 1);
+		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClasses[Value], GetActorLocation() + RandomLocation(), GetActorRotation());
+	}
+	if (AmmoPickupClass)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			GetWorld()->SpawnActor<APickup>(AmmoPickupClass, GetActorLocation() + RandomLocation(), GetActorRotation());
+			UE_LOG(LogTemp, Warning, TEXT("SpawnPickups"));
+		}
 	}
 }
 
-FVector ASupplyDrop::RandomLocation() 
+FVector ASupplyDrop::RandomLocation()
 {
 	FVector RandomLocation;
 	RandomLocation.X = FMath::RandRange(-100.f, 100.f);
@@ -112,6 +127,6 @@ FVector ASupplyDrop::RandomLocation()
 
 void ASupplyDrop::DestroyActor()
 {
-	SpawnPickups();
+	SpawnItems();
 	Destroy();
 }
