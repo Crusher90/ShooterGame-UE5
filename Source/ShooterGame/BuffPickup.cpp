@@ -19,7 +19,7 @@ void ABuffPickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComp
         if (ShooterCharacter)
         {
             // ShooterCharacter->SetBuffPickup(this);
-            SetBuffState(RandomBuff());
+            SetBuffState(BuffType);
         }
     }
     Super::OnPickupSphereBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
@@ -34,6 +34,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
     case EBuffType::EBT_Jump:
         if (ShooterCharacter && ShooterCharacter->GetCharacterMovement())
         {
+            GetWorldTimerManager().SetTimer(RemoveJumpTimer, ShooterCharacter, &AShooterCharacter::ResetJumpBuff, RemoveBuffTime);
             ShooterCharacter->GetCharacterMovement()->JumpZVelocity = 1000.f;
             ShooterCharacter->GetShooterController()->SetHUDBuffText(*BuffTypes::JumpBuff);
         }
@@ -42,6 +43,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
     case EBuffType::EBT_Speed:
         if(ShooterCharacter && ShooterCharacter->GetCharacterMovement())
         {
+            GetWorldTimerManager().SetTimer(RemoveSpeedTimer, ShooterCharacter, &AShooterCharacter::ResetSpeedBuff, RemoveBuffTime);
             ShooterCharacter->SetUseSprint(false);
             ShooterCharacter->GetCharacterMovement()->MaxWalkSpeed = 1000.f;
             ShooterCharacter->GetShooterController()->SetHUDBuffText(*BuffTypes::SpeedBuff);
@@ -51,6 +53,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
     case EBuffType::EBT_RapidFire:
         if (ShooterCharacter->GetEquippedWeapon() && (ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_AssaultRifle || ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_SMG))
         {
+            GetWorldTimerManager().SetTimer(RemoveRapidFireTimer, ShooterCharacter, &AShooterCharacter::ResetRapidFireBuff, RemoveBuffTime);
             ShooterCharacter->GetEquippedWeapon()->SetFireDelay(0.1f);
             ShooterCharacter->GetShooterController()->SetHUDBuffText(*BuffTypes::RapidFireBuff);
         }
@@ -65,32 +68,6 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
         }
         break;
     }
-    FTimerHandle RemoveBuffTimer;
-    GetWorldTimerManager().SetTimer(RemoveBuffTimer, ShooterCharacter, &AShooterCharacter::InitialValues, RemoveBuffTime);
-}
-
-EBuffType ABuffPickup::RandomBuff() 
-{
-    int32 Value = FMath::RandRange(0, 3);
-    switch (Value)
-    {
-    case 0:
-        BuffType = EBuffType::EBT_Jump;
-        break;
-    
-    case 1:
-        BuffType = EBuffType::EBT_RapidFire;
-        break;
-
-    case 2:
-        BuffType = EBuffType::EBT_Speed;
-        break;
-
-    case 3:
-        BuffType = EBuffType::EBT_Health;
-        break;
-    }
-    return BuffType;
 }
 
   

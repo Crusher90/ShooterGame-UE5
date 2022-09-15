@@ -177,6 +177,34 @@ void AShooterCharacter::FButtonReleased()
 	}
 }
 
+void AShooterCharacter::ResetJumpBuff() 
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->JumpZVelocity = 600.f;
+	}
+}
+
+void AShooterCharacter::ResetSpeedBuff() 
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		SetUseSprint(true);
+	}
+}
+
+void AShooterCharacter::ResetRapidFireBuff() 
+{
+	if (GetCharacterMovement())
+	{
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->SetFireDelay(0.2f);
+		}
+	}
+}
+
 void AShooterCharacter::CrouchButtonPressed()
 {
 	if (!bIsCrouched)
@@ -270,20 +298,6 @@ void AShooterCharacter::DropWeaponFromHands(AWeapon *WeaponToDrop)
 	}
 	SetEquippedWeapon(nullptr);
 	CombatState = ECombatState::ECS_Unoccupied;
-}
-
-void AShooterCharacter::InitialValues()
-{
-	if (GetCharacterMovement())
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
-		GetCharacterMovement()->JumpZVelocity = 600.f;
-		SetUseSprint(true);
-		if (EquippedWeapon)
-		{
-			EquippedWeapon->SetFireDelay(0.2f);
-		}
-	}
 }
 
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)

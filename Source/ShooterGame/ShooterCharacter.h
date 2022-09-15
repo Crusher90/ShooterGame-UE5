@@ -207,7 +207,11 @@ public:
 	// Weapon Drop Functionality
 	void DropWeaponFromHands(AWeapon *WeaponToDrop);
 
-	void InitialValues();
+	void ResetJumpBuff();
+
+	void ResetSpeedBuff();
+
+	void ResetRapidFireBuff();
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) override;
 
