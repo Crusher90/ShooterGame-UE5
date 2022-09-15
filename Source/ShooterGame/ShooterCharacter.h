@@ -7,6 +7,7 @@
 #include "CombatState.h"
 #include "TurningInPlace.h"
 #include "WeaponTypes.h"
+// #include "BuffPickup.h"
 #include "ShooterCharacter.generated.h"
 
 #define TRACE_LENGTH 100000.f
@@ -123,6 +124,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "SupplyDrop")
 	float SupplyOpenTime = 5.f;
+
+	// UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
+	// class ABuffPickup *BuffPickup;
 
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
@@ -250,4 +254,7 @@ public:
 	FORCEINLINE void SetHealth(float Value) {Health = Value;}
 
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+
+	// FORCEINLINE ABuffPickup *GetBuffPickup() const { return BuffPickup; }
+	// FORCEINLINE void SetBuffPickup(ABuffPickup *Value) { BuffPickup = Value; }
 };

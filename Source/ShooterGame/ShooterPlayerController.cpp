@@ -46,3 +46,14 @@ void AShooterPlayerController::SetHUDCarriedAmmo(int32 CarriedAmmo)
         ShooterHUD->CharacterOverlay->CarriedAmmo->SetText(FText::FromString(AmmoText));
     }
 }
+
+void AShooterPlayerController::SetHUDBuffText(FString ToDisplay) 
+{
+    ShooterHUD = ShooterHUD == nullptr ? Cast<AShooterHUD>(GetHUD()) : ShooterHUD;
+    if(ShooterHUD && ShooterHUD->CharacterOverlay && ShooterHUD->CharacterOverlay->BuffText)
+    {
+        FString BuffString = FString::Printf(TEXT("%s"), *ToDisplay);
+        ShooterHUD->CharacterOverlay->BuffText->SetText(FText::FromString(BuffString));
+        ShooterHUD->CharacterOverlay->PlayAnimation(ShooterHUD->CharacterOverlay->BuffTextAnimation);
+    }
+}

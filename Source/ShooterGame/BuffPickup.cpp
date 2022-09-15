@@ -6,6 +6,9 @@
 #include "TimerManager.h"
 #include "Weapon.h"
 #include "ShooterPlayerController.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "BuffTypes.h"
 
 
 void ABuffPickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
@@ -15,6 +18,7 @@ void ABuffPickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComp
         ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
         if (ShooterCharacter)
         {
+            // ShooterCharacter->SetBuffPickup(this);
             SetBuffState(RandomBuff());
         }
     }
@@ -31,6 +35,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
         if (ShooterCharacter && ShooterCharacter->GetCharacterMovement())
         {
             ShooterCharacter->GetCharacterMovement()->JumpZVelocity = 1000.f;
+            ShooterCharacter->GetShooterController()->SetHUDBuffText(*BuffTypes::JumpBuff);
         }
         break;
 
@@ -39,6 +44,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
         {
             ShooterCharacter->SetUseSprint(false);
             ShooterCharacter->GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+            ShooterCharacter->GetShooterController()->SetHUDBuffText(*BuffTypes::SpeedBuff);
         }
         break;
 
@@ -46,6 +52,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
         if (ShooterCharacter->GetEquippedWeapon() && (ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_AssaultRifle || ShooterCharacter->GetEquippedWeapon()->GetWeaponType() == EWeaponType::EWT_SMG))
         {
             ShooterCharacter->GetEquippedWeapon()->SetFireDelay(0.1f);
+            ShooterCharacter->GetShooterController()->SetHUDBuffText(*BuffTypes::RapidFireBuff);
         }
         break;
 
@@ -54,6 +61,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
         {
             ShooterCharacter->SetHealth(100.f);
             ShooterCharacter->GetShooterController()->SetHUDHealth(ShooterCharacter->GetHealth(), ShooterCharacter->GetMaxHealth());
+            ShooterCharacter->GetShooterController()->SetHUDBuffText(*BuffTypes::HealthBuff);
         }
         break;
     }

@@ -23,4 +23,10 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock *CarriedAmmo;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock *BuffText;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation *BuffTextAnimation;
 };

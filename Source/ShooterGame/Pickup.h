@@ -30,9 +30,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Pickups")
 	class UStaticMeshComponent *PickupMesh;
 
-	UPROPERTY(VisibleAnywhere, Category = "Pickups")
-	class UNiagaraComponent *NiagaraPickup;
-
 	UPROPERTY(EditAnywhere, Category = "Pickups")
 	class USoundCue *AfterPickupSound;
 
@@ -46,6 +43,9 @@ protected:
 	// Protected Variables
 	UPROPERTY(VisibleAnywhere, Category = "Pickups")
 	class AShooterCharacter *ShooterCharacter;
+
+	UPROPERTY(VisibleAnywhere, Category = "Pickups")
+	class UNiagaraComponent *NiagaraPickup;
 
 	// Protected Functions
 	UFUNCTION()

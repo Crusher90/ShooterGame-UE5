@@ -24,6 +24,8 @@ public:
 
 	void SetHUDCarriedAmmo(int32 CarriedAmmo);
 
+	void SetHUDBuffText(FString ToDisplay);
+
 private:
 	UPROPERTY()
 	class AShooterHUD *ShooterHUD;
