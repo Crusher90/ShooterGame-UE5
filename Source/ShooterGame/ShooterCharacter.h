@@ -96,12 +96,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
 	float MaxHealth = 100.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
-	float Shield = 100.f;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
-	float MaxShield = 100.f;
-
 	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
 	bool bUseSprint = true;
 
@@ -251,4 +245,9 @@ public:
 
 	FORCEINLINE AShooterPlayerController *GetShooterController() const { return ShooterController; }
 	FORCEINLINE void SetSupplyDrop(ASupplyDrop *Value) { SupplyDrop = Value; }
+
+	FORCEINLINE float GetHealth() const {return Health;}
+	FORCEINLINE void SetHealth(float Value) {Health = Value;}
+
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 };

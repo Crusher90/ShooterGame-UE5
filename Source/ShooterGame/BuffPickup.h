@@ -12,7 +12,7 @@ enum class EBuffType : uint8
 {
 	EBT_Jump UMETA(DisplayName = "JumpBuff"),
 	EBT_Speed UMETA(DisplayName = "SpeedBuff"),
-	EBT_Shield UMETA(DisplayName = "ShieldBuff"),
+	EBT_Health UMETA(DisplayName = "HealthBuff"),
 	EBT_RapidFire UMETA(DisplayName = "RapidFire"),
 
 	EBT_Max UMETA(DisplayName = "DefaultMax")
@@ -42,3 +42,4 @@ private:
 
 	EBuffType RandomBuff();
 };
+  

@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 #include "Weapon.h"
+#include "ShooterPlayerController.h"
 
 
 void ABuffPickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
@@ -27,12 +28,18 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
     switch (BuffType)
     {
     case EBuffType::EBT_Jump:
-        ShooterCharacter->GetCharacterMovement()->JumpZVelocity = 1000.f;
+        if (ShooterCharacter && ShooterCharacter->GetCharacterMovement())
+        {
+            ShooterCharacter->GetCharacterMovement()->JumpZVelocity = 1000.f;
+        }
         break;
 
     case EBuffType::EBT_Speed:
-        ShooterCharacter->SetUseSprint(false);
-        ShooterCharacter->GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+        if(ShooterCharacter && ShooterCharacter->GetCharacterMovement())
+        {
+            ShooterCharacter->SetUseSprint(false);
+            ShooterCharacter->GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+        }
         break;
 
     case EBuffType::EBT_RapidFire:
@@ -40,6 +47,15 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
         {
             ShooterCharacter->GetEquippedWeapon()->SetFireDelay(0.1f);
         }
+        break;
+
+    case EBuffType::EBT_Health:
+        if(ShooterCharacter && ShooterCharacter->GetController())
+        {
+            ShooterCharacter->SetHealth(100.f);
+            ShooterCharacter->GetShooterController()->SetHUDHealth(ShooterCharacter->GetHealth(), ShooterCharacter->GetMaxHealth());
+        }
+        break;
     }
     FTimerHandle RemoveBuffTimer;
     GetWorldTimerManager().SetTimer(RemoveBuffTimer, ShooterCharacter, &AShooterCharacter::InitialValues, RemoveBuffTime);
@@ -47,7 +63,7 @@ void ABuffPickup::SetBuffState(EBuffType BuffTypeValue)
 
 EBuffType ABuffPickup::RandomBuff() 
 {
-    int32 Value = FMath::RandRange(0, 2);
+    int32 Value = FMath::RandRange(0, 3);
     switch (Value)
     {
     case 0:
@@ -61,7 +77,12 @@ EBuffType ABuffPickup::RandomBuff()
     case 2:
         BuffType = EBuffType::EBT_Speed;
         break;
+
+    case 3:
+        BuffType = EBuffType::EBT_Health;
+        break;
     }
     return BuffType;
 }
 
+  
