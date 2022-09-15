@@ -124,6 +124,12 @@ private:
 
 	float CurrentFOV;
 
+	UPROPERTY()
+	class ASupplyDrop *SupplyDrop;
+
+	UPROPERTY(EditAnywhere, Category = "SupplyDrop")
+	float SupplyOpenTime = 5.f;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -192,6 +198,10 @@ protected:
 
 	void Aim(float DeltaTime);
 
+	void FButtonPressed();
+
+	void FButtonReleased();
+
 public:
 	// Weapon Equipping Functionality
 	void AttachWeaponToHands(AWeapon *WeaponInHands);
@@ -205,6 +215,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowSniperScopeWidget(bool bShowScope);
+
+	// Variables
+	FTimerHandle SupplyOpenTimer;
 
 public:
 	/* ******************Getters And Setters****************** */
@@ -237,4 +250,5 @@ public:
 	FORCEINLINE bool GetDie() const {return bDie;}
 
 	FORCEINLINE AShooterPlayerController *GetShooterController() const { return ShooterController; }
+	FORCEINLINE void SetSupplyDrop(ASupplyDrop *Value) { SupplyDrop = Value; }
 };

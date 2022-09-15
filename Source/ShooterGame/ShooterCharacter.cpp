@@ -12,6 +12,8 @@
 #include "ShooterHUD.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy.h"
+#include "SupplyDrop.h"
+#include "TimerManager.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -88,6 +90,8 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ThisClass::FireButtonReleased);
 	PlayerInputComponent->BindAction(FName("Reload"), EInputEvent::IE_Pressed, this, &ThisClass::ReloadButtonPressed);
 	PlayerInputComponent->BindAction(FName("Aiming"), EInputEvent::IE_Pressed, this, &ThisClass::AimButtonPressed);
+	PlayerInputComponent->BindAction(FName("SupplyDrop"), EInputEvent::IE_Pressed, this, &ThisClass::FButtonPressed);
+	PlayerInputComponent->BindAction(FName("SupplyDrop"), EInputEvent::IE_Released, this, &ThisClass::FButtonReleased);
 }
 
 void AShooterCharacter::MoveForward(float Value)
@@ -153,6 +157,22 @@ void AShooterCharacter::Aim(float DeltaTime)
 			CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
 		}
 		FollowCamera->SetFieldOfView(CurrentFOV);
+	}
+}
+
+void AShooterCharacter::FButtonPressed() 
+{
+	if(SupplyDrop)
+	{
+		GetWorldTimerManager().SetTimer(SupplyOpenTimer, SupplyDrop, &ASupplyDrop::DestroyActor, SupplyOpenTime);
+	}
+}
+
+void AShooterCharacter::FButtonReleased() 
+{
+	if(SupplyDrop)
+	{
+		GetWorldTimerManager().ClearTimer(SupplyOpenTimer);
 	}
 }
 

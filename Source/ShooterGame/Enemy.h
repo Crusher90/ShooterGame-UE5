@@ -45,7 +45,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "EnemProperties")
 	UAnimMontage *AttackMontage;
-	
+
 	UPROPERTY(EditAnywhere, Category = "EnemProperties")
 	UAnimMontage *DeathMontage;
 

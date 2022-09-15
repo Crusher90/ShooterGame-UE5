@@ -48,6 +48,8 @@ AEnemy::AEnemy()
 	HandBox1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HandBox1->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	HandBox1->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+
+	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 }
 
 // Called when the game starts or when spawned
@@ -100,7 +102,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AC
 		{
 			AnimInstance->Montage_Play(HitReactMontage, 2.5f);
 			bCanHitReact = false;
-			if(Health > 0)
+			if (Health > 0)
 			{
 				EnemyStun();
 				if (EnemyController)
@@ -270,7 +272,6 @@ void AEnemy::Death()
 		{
 			AnimInstance->Montage_Play(DeathMontage);
 			AnimInstance->Montage_JumpToSection(FName("Death2"), DeathMontage);
-			
 		}
 		break;
 	}

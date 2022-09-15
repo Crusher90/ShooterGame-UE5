@@ -32,11 +32,13 @@ protected:
 	void SetBuffState(EBuffType BuffTypeValue);
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "BuffPickups", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BuffPickups", meta = (AllowPrivateAccess = "true"))
 	EBuffType BuffType;
 
 	UPROPERTY(EditAnywhere, Category = "BuffPickups")
 	float RemoveBuffTime = 10.f;
 
 	EWeaponType WeaponType;
+
+	EBuffType RandomBuff();
 };
