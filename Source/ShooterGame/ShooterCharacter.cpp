@@ -14,7 +14,7 @@
 #include "Enemy.h"
 #include "SupplyDrop.h"
 #include "TimerManager.h"
-// #include "BuffPickup.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -310,6 +310,14 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &Dama
 	else
 	{
 		Health -= DamageAmount;
+		if(BloodParticles)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(this, BloodParticles, GetActorLocation() + FVector(0.f, 0.f, 50.f));
+		}
+		if(HitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+		}
 	}
 	ShooterController->SetHUDHealth(Health, MaxHealth);
 	return DamageAmount;

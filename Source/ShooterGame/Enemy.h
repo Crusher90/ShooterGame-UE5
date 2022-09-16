@@ -92,6 +92,12 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EnemyProperties", meta = (AllowPrivateAccess = "true"))
 	bool bDie = false;
 
+	UPROPERTY(EditAnywhere, Category = "EnemyProperties")
+	class UParticleSystem *BloodParticles;
+
+	UPROPERTY(EditAnywhere, Category = "EnemyProperties")
+	class USoundCue *HitSound;
+
 protected:
 	UFUNCTION()
 	virtual void OnAgroBoxBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);

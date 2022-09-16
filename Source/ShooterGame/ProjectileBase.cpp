@@ -65,7 +65,7 @@ void AProjectileBase::DestroyProjectile()
 	Destroy();
 }
 
-void AProjectileBase::ExplodeDamage() 
+void AProjectileBase::ExplodeDamage()
 {
 	if (WeaponType == EWeaponType::EWT_GrenadeLauncher || WeaponType == EWeaponType::EWT_RocketLauncher)
 	{

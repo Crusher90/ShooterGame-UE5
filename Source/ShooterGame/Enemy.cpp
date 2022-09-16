@@ -14,6 +14,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -109,6 +110,14 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AC
 				{
 					EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("EnemyStun"), bStunned);
 				}
+			}
+			if (BloodParticles)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(this, BloodParticles, GetActorLocation() + FVector(0.f, 0.f, 50.f));
+			}
+			if (HitSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 			}
 			GetWorldTimerManager().SetTimer(HitReactTimer, this, &ThisClass::ResetHitReactValue, 1.f);
 		}
@@ -213,6 +222,12 @@ void AEnemy::EnemyPatrol()
 		EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint"), WorldPatrolPoint);
 		EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint2"), WorldPatrolPoint2);
 	}
+	// Code for zombies follow in beginplay;
+	// ShooterCharacter = Cast<AShooterCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	// if(ShooterCharacter)
+	// {
+	// 	EnemyController->GetBlackboardComponent()->SetValueAsObject(FName("Target"), ShooterCharacter);
+	// }
 	EnemyController->RunBehaviorTree(GetBehaviorTree());
 }
 

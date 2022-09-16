@@ -125,8 +125,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "SupplyDrop")
 	float SupplyOpenTime = 5.f;
 
-	// UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterCharacter", meta = (AllowPrivateAccess = "true"))
-	// class ABuffPickup *BuffPickup;
+	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
+	class UParticleSystem *BloodParticles;
+
+	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
+	class USoundCue *HitSound;
 
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
