@@ -211,23 +211,23 @@ void AEnemy::OnHandBox1EndOverlap(UPrimitiveComponent *OverlappedComponent, AAct
 
 void AEnemy::EnemyPatrol()
 {
-	const FVector WorldPatrolPoint = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint);
-	const FVector WorldPatrolPoint2 = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint2);
+	// const FVector WorldPatrolPoint = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint);
+	// const FVector WorldPatrolPoint2 = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint2);
 
-	DrawDebugSphere(GetWorld(), WorldPatrolPoint, 30.f, 8.f, FColor::Cyan, true);
-	DrawDebugSphere(GetWorld(), WorldPatrolPoint2, 30.f, 8.f, FColor::Blue, true);
+	// DrawDebugSphere(GetWorld(), WorldPatrolPoint, 30.f, 8.f, FColor::Cyan, true);
+	// DrawDebugSphere(GetWorld(), WorldPatrolPoint2, 30.f, 8.f, FColor::Blue, true);
 
-	if (EnemyController)
-	{
-		EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint"), WorldPatrolPoint);
-		EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint2"), WorldPatrolPoint2);
-	}
-	// Code for zombies follow in beginplay;
-	// ShooterCharacter = Cast<AShooterCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	// if(ShooterCharacter)
+	// if (EnemyController)
 	// {
-	// 	EnemyController->GetBlackboardComponent()->SetValueAsObject(FName("Target"), ShooterCharacter);
+	// 	EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint"), WorldPatrolPoint);
+	// 	EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint2"), WorldPatrolPoint2);
 	// }
+	// Code for zombies follow in beginplay;
+	ShooterCharacter = Cast<AShooterCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if(ShooterCharacter)
+	{
+		EnemyController->GetBlackboardComponent()->SetValueAsObject(FName("Target"), ShooterCharacter);
+	}
 	EnemyController->RunBehaviorTree(GetBehaviorTree());
 }
 
