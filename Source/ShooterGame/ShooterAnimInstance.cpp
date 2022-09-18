@@ -23,6 +23,11 @@ void UShooterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		FVector Velocity = ShooterCharacter->GetVelocity();
 		Velocity.Z = 0.f;
 		Speed = Velocity.Size();
+		if(Speed == 0.f)
+		{
+			ShooterCharacter->GetCharacterMovement()->MaxWalkSpeed = 300.f;
+			ShooterCharacter->bSprint = false;
+		}
 
 		if (ShooterCharacter && ShooterCharacter->GetCharacterMovement())
 		{

@@ -69,6 +69,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 	AimOffset(DeltaTime);
 	SetCrosshairToScreen(DeltaTime);
 	Aim(DeltaTime);
+	HideMesh();
 }
 
 // Called to bind functionality to input
@@ -177,6 +178,18 @@ void AShooterCharacter::FButtonReleased()
 	}
 }
 
+void AShooterCharacter::HideMesh() 
+{
+	if((FollowCamera->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
+	{
+		GetMesh()->SetVisibility(false);
+	}
+	else
+	{
+		GetMesh()->SetVisibility(true);
+	}
+}
+
 void AShooterCharacter::ResetJumpBuff() 
 {
 	if (GetCharacterMovement())
@@ -226,18 +239,30 @@ void AShooterCharacter::CharacterJump()
 
 void AShooterCharacter::Sprint()
 {
-	if (bUseSprint && GetCharacterMovement())
+	// if (bUseSprint && GetCharacterMovement())
+	// {
+	// 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	// }
+	if(bUseSprint && GetCharacterMovement())
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		bSprint = !bSprint;
+		if(bSprint)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		}
+		else
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		}
 	}
 }
 
 void AShooterCharacter::StopSprint()
 {
-	if (bUseSprint && GetCharacterMovement())
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	}
+	// if (bUseSprint && GetCharacterMovement())
+	// {
+	// 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	// }
 }
 
 void AShooterCharacter::EquipButtonPressed()

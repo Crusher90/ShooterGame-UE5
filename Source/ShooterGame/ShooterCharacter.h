@@ -131,6 +131,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
 	class USoundCue *HitSound;
 
+	UPROPERTY(EditAnywhere)
+	float CameraThreshold = 100.f;
+
 protected:
 	// Move Forward Function To Move Character In World Forward Direction X
 	void MoveForward(float Value);
@@ -203,6 +206,8 @@ protected:
 
 	void FButtonReleased();
 
+	void HideMesh();
+
 public:
 	// Weapon Equipping Functionality
 	void AttachWeaponToHands(AWeapon *WeaponInHands);
@@ -223,6 +228,9 @@ public:
 
 	// Variables
 	FTimerHandle SupplyOpenTimer;
+
+	UPROPERTY(VisibleAnywhere, Category = "ShooterCharacter")
+	bool bSprint = false;
 
 public:
 	/* ******************Getters And Setters****************** */
