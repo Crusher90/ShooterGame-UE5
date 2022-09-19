@@ -15,6 +15,7 @@
 #include "SupplyDrop.h"
 #include "TimerManager.h"
 #include "Sound/SoundCue.h"
+#include "WeaponTypes.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -86,7 +87,6 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction(FName("Jump"), EInputEvent::IE_Pressed, this, &ThisClass::CharacterJump);
 	PlayerInputComponent->BindAction(FName("Crouch"), EInputEvent::IE_Pressed, this, &ThisClass::CrouchButtonPressed);
 	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Pressed, this, &ThisClass::Sprint);
-	PlayerInputComponent->BindAction(FName("Sprint"), EInputEvent::IE_Released, this, &ThisClass::StopSprint);
 	PlayerInputComponent->BindAction(FName("Equip"), EInputEvent::IE_Pressed, this, &ThisClass::EquipButtonPressed);
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Pressed, this, &ThisClass::FireButtonPressed);
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ThisClass::FireButtonReleased);
@@ -138,6 +138,8 @@ void AShooterCharacter::AimButtonPressed()
 	if (EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
 	{
 		ShowSniperScopeWidget(bAim);
+		GetMesh()->SetVisibility(!bAim);
+		EquippedWeapon->GetWeaponMesh()->SetVisibility(!bAim);
 	}
 }
 
@@ -152,6 +154,7 @@ void AShooterCharacter::Aim(float DeltaTime)
 			// FollowCamera->SetFieldOfView(45.f);
 			CurrentFOV = FMath::FInterpTo(CurrentFOV, EquippedWeapon->GetZoomFOV(), DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
 			StopSprint();
+			bSprint = false;
 		}
 		else
 		{
@@ -180,6 +183,8 @@ void AShooterCharacter::FButtonReleased()
 
 void AShooterCharacter::HideMesh() 
 {
+	if(EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
+		return;
 	if((FollowCamera->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
 	{
 		GetMesh()->SetVisibility(false);
@@ -259,10 +264,10 @@ void AShooterCharacter::Sprint()
 
 void AShooterCharacter::StopSprint()
 {
-	// if (bUseSprint && GetCharacterMovement())
-	// {
-	// 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	// }
+	if (bUseSprint && GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	}
 }
 
 void AShooterCharacter::EquipButtonPressed()
@@ -391,6 +396,8 @@ void AShooterCharacter::FireTimerFinished()
 
 void AShooterCharacter::ReloadButtonPressed()
 {
+	if (EquippedWeapon == nullptr)
+		return;
 	bCanFire = false;
 	if (EquippedWeapon && EquippedWeapon->GetCarriedAmmo() == 0 && EquippedWeapon->GetMagazineAmmo() > 0)
 	{

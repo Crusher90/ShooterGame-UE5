@@ -28,6 +28,9 @@ ASupplyDrop::ASupplyDrop()
 
 	DropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DropMesh"));
 	DropMesh->SetupAttachment(GetRootComponent());
+	DropMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	DropMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	DropMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	SignalParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SignalParticle"));
 	SignalParticle->SetupAttachment(GetRootComponent());
@@ -98,13 +101,13 @@ void ASupplyDrop::SpawnItems()
 	if (NumBuffPickupClass > 0)
 	{
 		int32 Value = FMath::RandRange(0, NumBuffPickupClass - 1);
-		BuffPickup = GetWorld()->SpawnActor<ABuffPickup>(BuffPickupClasses[Value], GetActorLocation() + RandomLocation(), GetActorRotation());
+		BuffPickup = GetWorld()->SpawnActor<ABuffPickup>(BuffPickupClasses[Value], GetActorLocation() + RandomLocation(), FRotator::ZeroRotator);
 	}
 	int32 NumWeaponClass = WeaponClasses.Num();
 	if (NumWeaponClass > 0)
 	{
 		int32 Value = FMath::RandRange(0, NumWeaponClass - 1);
-		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClasses[Value], GetActorLocation() + RandomLocation(), GetActorRotation());
+		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClasses[Value], GetActorLocation() + RandomLocation(), FRotator::ZeroRotator);
 	}
 	if (AmmoPickupClass)
 	{
