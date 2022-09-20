@@ -39,7 +39,7 @@ private:
 	AEnemy *Enemy;
 
 	UPROPERTY(VisibleAnywhere, Category = "ZombieSpawner")
-	int32 ZombiesToSpawn = 5;
+	int32 ZombiesToSpawn = 1;
 
 	FVector BoxOrigin;
 

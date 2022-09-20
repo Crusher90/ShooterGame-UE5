@@ -291,6 +291,9 @@ void AEnemy::Death()
 		break;
 	}
 	EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), bDie);
+	AgroBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AttackSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	FTimerHandle DestroyTimer;
 	GetWorldTimerManager().SetTimer(DestroyTimer, this, &ThisClass::DestroyEnemy, 10.f);
 }

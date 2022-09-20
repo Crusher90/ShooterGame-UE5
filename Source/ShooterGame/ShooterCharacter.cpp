@@ -165,27 +165,27 @@ void AShooterCharacter::Aim(float DeltaTime)
 	}
 }
 
-void AShooterCharacter::FButtonPressed() 
+void AShooterCharacter::FButtonPressed()
 {
-	if(SupplyDrop)
+	if (SupplyDrop)
 	{
 		GetWorldTimerManager().SetTimer(SupplyOpenTimer, SupplyDrop, &ASupplyDrop::DestroyActor, SupplyOpenTime);
 	}
 }
 
-void AShooterCharacter::FButtonReleased() 
+void AShooterCharacter::FButtonReleased()
 {
-	if(SupplyDrop)
+	if (SupplyDrop)
 	{
 		GetWorldTimerManager().ClearTimer(SupplyOpenTimer);
 	}
 }
 
-void AShooterCharacter::HideMesh() 
+void AShooterCharacter::HideMesh()
 {
-	if(EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
+	if (EquippedWeapon && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
 		return;
-	if((FollowCamera->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
+	if ((FollowCamera->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
 	{
 		GetMesh()->SetVisibility(false);
 	}
@@ -195,7 +195,7 @@ void AShooterCharacter::HideMesh()
 	}
 }
 
-void AShooterCharacter::ResetJumpBuff() 
+void AShooterCharacter::ResetJumpBuff()
 {
 	if (GetCharacterMovement())
 	{
@@ -203,7 +203,7 @@ void AShooterCharacter::ResetJumpBuff()
 	}
 }
 
-void AShooterCharacter::ResetSpeedBuff() 
+void AShooterCharacter::ResetSpeedBuff()
 {
 	if (GetCharacterMovement())
 	{
@@ -212,7 +212,7 @@ void AShooterCharacter::ResetSpeedBuff()
 	}
 }
 
-void AShooterCharacter::ResetRapidFireBuff() 
+void AShooterCharacter::ResetRapidFireBuff()
 {
 	if (GetCharacterMovement())
 	{
@@ -248,10 +248,10 @@ void AShooterCharacter::Sprint()
 	// {
 	// 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	// }
-	if(bUseSprint && GetCharacterMovement())
+	if (bUseSprint && GetCharacterMovement())
 	{
 		bSprint = !bSprint;
-		if(bSprint)
+		if (bSprint)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 600.f;
 		}
@@ -340,11 +340,11 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &Dama
 	else
 	{
 		Health -= DamageAmount;
-		if(BloodParticles)
+		if (BloodParticles)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(this, BloodParticles, GetActorLocation() + FVector(0.f, 0.f, 50.f));
 		}
-		if(HitSound)
+		if (HitSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 		}
