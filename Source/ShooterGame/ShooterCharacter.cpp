@@ -209,6 +209,7 @@ void AShooterCharacter::ResetSpeedBuff()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		SetUseSprint(true);
+		bSprint = false;
 	}
 }
 

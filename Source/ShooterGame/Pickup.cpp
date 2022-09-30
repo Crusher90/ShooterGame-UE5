@@ -25,6 +25,9 @@ APickup::APickup()
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
 	PickupMesh->SetupAttachment(GetRootComponent());
+	PickupMesh->SetRenderCustomDepth(true);
+	PickupMesh->SetCustomDepthStencilValue(250);
+	PickupMesh->MarkRenderStateDirty();
 
 	NiagaraPickup = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraPickup"));
 	NiagaraPickup->SetupAttachment(GetRootComponent());

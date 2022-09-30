@@ -27,6 +27,9 @@ AWeapon::AWeapon()
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	WeaponMesh->SetSimulatePhysics(false);
 	WeaponMesh->SetEnableGravity(false);
+	WeaponMesh->SetRenderCustomDepth(true);
+	WeaponMesh->SetCustomDepthStencilValue(251);
+	WeaponMesh->MarkRenderStateDirty();
 
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponBox"));
 	WeaponBox->SetupAttachment(GetRootComponent());
@@ -111,6 +114,8 @@ void AWeapon::WeaponEquippedState()
 		WeaponMesh->SetSimulatePhysics(false);
 		WeaponMesh->SetEnableGravity(false);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WeaponMesh->SetRenderCustomDepth(false);
+		WeaponMesh->MarkRenderStateDirty();
 	}
 }
 
@@ -124,6 +129,8 @@ void AWeapon::WeaponDroppedState()
 		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+		WeaponMesh->SetRenderCustomDepth(true);
+		WeaponMesh->MarkRenderStateDirty();
 	}
 	FTimerHandle DelayTimer;
 	GetWorldTimerManager().SetTimer(DelayTimer, this, &ThisClass::DelayedDrop, 1.2f);

@@ -42,7 +42,7 @@ void AZombieSpawner::SpawnZombie()
 		int32 RandValue = FMath::RandRange(0, TypesOfZombies - 1);
 		for (int32 i = 0; i < ZombiesToSpawn; i++)
 		{
-			Enemy = GetWorld()->SpawnActor<AEnemy>(EnemyClasses[RandValue], UKismetMathLibrary::RandomPointInBoundingBox(BoxOrigin, BoxExtent), GetActorRotation());
+			Enemy = GetWorld()->SpawnActor<AEnemy>(EnemyClasses[RandValue], UKismetMathLibrary::RandomPointInBoundingBox(BoxOrigin, BoxExtent), FRotator::ZeroRotator);
 		}
 		ZombiesToSpawn = FMath::RandRange(MinZombieSpawn, MaxZombieSpawn);
 		ZombieSpawnTime = FMath::RandRange(MinSpawnTime, MaxSpawnTime);
