@@ -13,5 +13,9 @@ UCLASS()
 class SHOOTERGAME_API AShooterGameGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ShooterGameMode")
+	int32 Kills = 0;
 	
 };

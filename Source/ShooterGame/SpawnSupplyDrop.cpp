@@ -25,7 +25,8 @@ void ASpawnSupplyDrop::BeginPlay()
 
 	BoxExtent = SpawnBox->GetScaledBoxExtent();
 	BoxOrigin = SpawnBox->GetComponentLocation();
-	StartSupplyDropTimer();
+	SpawnSupplyDrop();
+	// StartSupplyDropTimer();
 }
 
 // Called every frame

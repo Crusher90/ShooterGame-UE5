@@ -82,6 +82,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
 	class UAnimMontage *ReloadMontage;
 
+	UPROPERTY(EditAnywhere, Category = "ShooterCharacter")
+	class UAnimMontage *DeathMontage;
+
 	FVector HitTarget;
 
 	FTimerHandle FireTimer;
@@ -207,6 +210,8 @@ protected:
 	void FButtonReleased();
 
 	void HideMesh();
+
+	void AfterDeath();
 
 public:
 	// Weapon Equipping Functionality

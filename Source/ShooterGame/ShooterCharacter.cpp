@@ -445,8 +445,19 @@ void AShooterCharacter::SetCarriedHUDAmmo()
 void AShooterCharacter::Die()
 {
 	bDie = true;
+	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(DeathMontage);
+	}
 	DisableInput(ShooterController);
-	Destroy();
+	FTimerHandle AfterDeadTimer;
+	GetWorldTimerManager().SetTimer(AfterDeadTimer, this, &ThisClass::AfterDeath, DeathMontage->GetPlayLength() + 2.f);
+}
+
+void AShooterCharacter::AfterDeath()
+{
+	UGameplayStatics::OpenLevel(this, FName("AfterDeathLevel"));
 }
 
 void AShooterCharacter::AfterReloadMontage()

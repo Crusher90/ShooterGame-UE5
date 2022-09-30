@@ -15,6 +15,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "ShooterGameGameModeBase.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -74,6 +75,8 @@ void AEnemy::BeginPlay()
 	HandBox1->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnHandBox1EndOverlap);
 
 	EnemyPatrol();
+
+	ShooterGameModeBase = Cast<AShooterGameGameModeBase>(UGameplayStatics::GetGameMode(this));
 }
 
 // Called every frame
@@ -224,7 +227,7 @@ void AEnemy::EnemyPatrol()
 	// }
 	// Code for zombies follow in beginplay;
 	ShooterCharacter = Cast<AShooterCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if(ShooterCharacter)
+	if (ShooterCharacter)
 	{
 		EnemyController->GetBlackboardComponent()->SetValueAsObject(FName("Target"), ShooterCharacter);
 	}
@@ -294,6 +297,10 @@ void AEnemy::Death()
 	AgroBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AttackSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (ShooterGameModeBase)
+	{
+		ShooterGameModeBase->Kills = ++ShooterGameModeBase->Kills;
+	}
 	FTimerHandle DestroyTimer;
 	GetWorldTimerManager().SetTimer(DestroyTimer, this, &ThisClass::DestroyEnemy, 10.f);
 }
