@@ -50,7 +50,7 @@ private:
 	class AWeapon *EquippedWeapon;
 
 	// Game Overall Sensitivity
-	UPROPERTY(EditAnywhere, Category = "CharacterProperties")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterProperties", meta = (AllowPrivateAccess = "true"))
 	float Sensitivity = 45.f;
 
 	// ENUM Combat State Variable
@@ -256,22 +256,22 @@ public:
 	FORCEINLINE AWeapon *GetEquippedWeapon() { return EquippedWeapon; }
 	FORCEINLINE void SetEquippedWeapon(AWeapon *WeaponToSet) { EquippedWeapon = WeaponToSet; }
 
-	FORCEINLINE float GetAO_Yaw() const {return AO_Yaw;}
-	FORCEINLINE float GetAO_Pitch() const {return AO_Pitch;}
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 
 	FORCEINLINE FVector GetHitTarget() const { return HitTarget; }
 
-	FORCEINLINE bool GetUseSprint() const {return bUseSprint;}
-	FORCEINLINE void SetUseSprint(bool Value) {bUseSprint = Value;}
+	FORCEINLINE bool GetUseSprint() const { return bUseSprint; }
+	FORCEINLINE void SetUseSprint(bool Value) { bUseSprint = Value; }
 
-	FORCEINLINE AEnemy *GetEnemy() const {return Enemy;}
-	FORCEINLINE bool GetDie() const {return bDie;}
+	FORCEINLINE AEnemy *GetEnemy() const { return Enemy; }
+	FORCEINLINE bool GetDie() const { return bDie; }
 
 	FORCEINLINE AShooterPlayerController *GetShooterController() const { return ShooterController; }
 	FORCEINLINE void SetSupplyDrop(ASupplyDrop *Value) { SupplyDrop = Value; }
 
-	FORCEINLINE float GetHealth() const {return Health;}
-	FORCEINLINE void SetHealth(float Value) {Health = Value;}
+	FORCEINLINE float GetHealth() const { return Health; }
+	FORCEINLINE void SetHealth(float Value) { Health = Value; }
 
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 

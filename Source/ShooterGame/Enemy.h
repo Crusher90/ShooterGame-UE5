@@ -31,7 +31,7 @@ public:
 	void ResetHitReactValue();
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Enemy")
+	UPROPERTY(EditAnywhere, Category = "Enemy")
 	float Health = 100.f;
 
 	UPROPERTY(EditAnywhere, Category = "Enemy")

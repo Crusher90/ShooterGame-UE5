@@ -40,13 +40,6 @@ void AZombieSpawner::SpawnZombie()
 	if (TypesOfZombies > 0)
 	{
 		FVector RandomPointInBox = UKismetMathLibrary::RandomPointInBoundingBox(BoxOrigin, BoxExtent);
-		FMath::Abs(RandomPointInBox.X);
-		FMath::Abs(RandomPointInBox.Y);
-		FMath::Abs(RandomPointInBox.Z);
-		if(GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, FString::Printf(TEXT("%f, %f, %f"), RandomPointInBox.X, RandomPointInBox.Y, RandomPointInBox.Z));
-		}
 		int32 RandValue = FMath::RandRange(0, TypesOfZombies - 1);
 		for (int32 i = 0; i < ZombiesToSpawn; i++)
 		{
