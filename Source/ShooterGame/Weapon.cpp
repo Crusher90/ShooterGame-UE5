@@ -12,6 +12,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Enemy.h"
 #include "ShooterPlayerController.h"
+#include "Animation/AnimationAsset.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -157,6 +158,10 @@ void AWeapon::Fire(const FVector& HitTarget)
 	if(HitParticle)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle, HitTarget);
+	}
+	if(WeaponMesh)
+	{
+		WeaponMesh->PlayAnimation(GunFireAnimation, false);
 	}
 	if (MagazineAmmo > 0)
 		--MagazineAmmo;

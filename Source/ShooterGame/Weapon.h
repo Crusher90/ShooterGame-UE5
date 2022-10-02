@@ -87,6 +87,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
 	float ZoomInterpSpeed = 20.f;
 
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	class UAnimationAsset *GunFireAnimation;
+
 protected:
 	/* ******************FUNCTIONS****************** */
 	// Sets the Weapon State
@@ -129,7 +132,7 @@ protected:
 
 public:
 	// Weapon Fire Defination
-	virtual void Fire(const FVector& HitTarget);
+	virtual void Fire(const FVector &HitTarget);
 
 	void Reload();
 
@@ -166,16 +169,16 @@ public:
 	// Weapon Mesh
 	FORCEINLINE USkeletalMeshComponent *GetWeaponMesh() const { return WeaponMesh; }
 
-	FORCEINLINE bool GetAutomaticWeaponValue() const {return bAutomaticWeapon;}
-	FORCEINLINE float GetFireDelay() const {return FireDelay;}
+	FORCEINLINE bool GetAutomaticWeaponValue() const { return bAutomaticWeapon; }
+	FORCEINLINE float GetFireDelay() const { return FireDelay; }
 	FORCEINLINE void SetFireDelay(float Value) { FireDelay = Value; }
 
-	FORCEINLINE int32 GetMagazineAmmo() const {return MagazineAmmo;}
+	FORCEINLINE int32 GetMagazineAmmo() const { return MagazineAmmo; }
 	FORCEINLINE int32 GetCarriedAmmo() { return CarriedAmmo; }
 	FORCEINLINE void SetCarriedAmmo(int32 Ammo) { CarriedAmmo = Ammo; }
 
-	FORCEINLINE float GetDamage() const {return Damage;}
-	FORCEINLINE float GetHeadShotDamage() const {return HeadShotDamage;}
+	FORCEINLINE float GetDamage() const { return Damage; }
+	FORCEINLINE float GetHeadShotDamage() const { return HeadShotDamage; }
 
 	FORCEINLINE float GetZoomFOV() const { return ZoomedFOV; }
 	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
