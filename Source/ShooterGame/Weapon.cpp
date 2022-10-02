@@ -34,6 +34,7 @@ AWeapon::AWeapon()
 
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponBox"));
 	WeaponBox->SetupAttachment(GetRootComponent());
+	WeaponBox->SetBoxExtent(FVector(50.f));
 	WeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	WeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
@@ -106,7 +107,7 @@ void AWeapon::OnWeaponStateSet()
 
 void AWeapon::WeaponEquippedState()
 {
-	if (WeaponBox) 
+	if (WeaponBox)
 	{
 		WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
@@ -147,19 +148,19 @@ void AWeapon::DelayedDrop()
 	}
 }
 
-void AWeapon::Fire(const FVector& HitTarget)
+void AWeapon::Fire(const FVector &HitTarget)
 {
 	Enemy = ShooterCharacter->GetEnemy();
 	const USkeletalMeshSocket *MuzzleFlashSocket = WeaponMesh->GetSocketByName("MuzzleFlash");
-	if(MuzzleFlashSocket && MuzzleFlashParticle)
+	if (MuzzleFlashSocket && MuzzleFlashParticle)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, MuzzleFlashParticle, MuzzleFlashSocket->GetSocketLocation(WeaponMesh), MuzzleFlashSocket->GetSocketTransform(WeaponMesh).GetRotation().Rotator());
 	}
-	if(HitParticle)
+	if (HitParticle)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle, HitTarget);
 	}
-	if(WeaponMesh)
+	if (WeaponMesh)
 	{
 		WeaponMesh->PlayAnimation(GunFireAnimation, false);
 	}
@@ -167,7 +168,7 @@ void AWeapon::Fire(const FVector& HitTarget)
 		--MagazineAmmo;
 	else
 		MagazineAmmo = 0;
-	if(Enemy && !Enemy->GetDie())
+	if (Enemy && !Enemy->GetDie())
 	{
 		ApplyDamage();
 	}
@@ -175,9 +176,9 @@ void AWeapon::Fire(const FVector& HitTarget)
 
 void AWeapon::ApplyDamage()
 {
-	if(WeaponType == EWeaponType::EWT_AssaultRifle || WeaponType == EWeaponType::EWT_Pistol || WeaponType == EWeaponType::EWT_SMG || WeaponType == EWeaponType::EWT_SniperRifle)
+	if (WeaponType == EWeaponType::EWT_AssaultRifle || WeaponType == EWeaponType::EWT_Pistol || WeaponType == EWeaponType::EWT_SMG || WeaponType == EWeaponType::EWT_SniperRifle)
 	{
-		if(ShooterCharacter && Enemy)
+		if (ShooterCharacter && Enemy)
 		{
 			if (Enemy->GetBone() == FString("Spine2") || Enemy->GetBone() == FString("Head"))
 			{
@@ -191,10 +192,10 @@ void AWeapon::ApplyDamage()
 	}
 }
 
-void AWeapon::Reload() 
+void AWeapon::Reload()
 {
 	int32 AmountToReload = MagazineSize - MagazineAmmo;
-	if(AmountToReload >= CarriedAmmo)
+	if (AmountToReload >= CarriedAmmo)
 	{
 		MagazineAmmo = MagazineAmmo + CarriedAmmo;
 		CarriedAmmo = 0;
@@ -205,4 +206,3 @@ void AWeapon::Reload()
 		MagazineAmmo = MagazineAmmo + AmountToReload;
 	}
 }
-  

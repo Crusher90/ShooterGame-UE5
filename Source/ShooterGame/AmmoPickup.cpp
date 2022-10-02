@@ -15,7 +15,7 @@ void AAmmoPickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComp
             return;
         if(ShooterCharacter && ShooterCharacter->GetEquippedWeapon())
         {
-            ShooterCharacter->GetEquippedWeapon()->CarriedAmmo += 30;
+            ShooterCharacter->GetEquippedWeapon()->CarriedAmmo += 60;
             Super::OnPickupSphereBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
         }
     }
