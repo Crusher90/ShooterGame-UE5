@@ -7,7 +7,6 @@
 #include "CombatState.h"
 #include "TurningInPlace.h"
 #include "WeaponTypes.h"
-// #include "BuffPickup.h"
 #include "ShooterCharacter.generated.h"
 
 #define TRACE_LENGTH 100000.f
@@ -183,6 +182,8 @@ protected:
 
 	void PlayFireRifleMontage();
 
+	void AfterReloadMontage();
+
 	void SetCrosshairToScreen(float DeltaTime);
 
 	void TraceUnderCrosshair(FHitResult &TraceHitResult);
@@ -192,8 +193,6 @@ protected:
 	void FireTimerFinished();
 
 	void ReloadButtonPressed();
-
-	void AfterReloadMontage();
 
 	void ReloadWeapon();
 
@@ -274,7 +273,4 @@ public:
 	FORCEINLINE void SetHealth(float Value) { Health = Value; }
 
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
-
-	// FORCEINLINE ABuffPickup *GetBuffPickup() const { return BuffPickup; }
-	// FORCEINLINE void SetBuffPickup(ABuffPickup *Value) { BuffPickup = Value; }
 };

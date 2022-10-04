@@ -18,7 +18,6 @@ void ABuffPickup::OnPickupSphereBeginOverlap(UPrimitiveComponent *OverlappedComp
         ShooterCharacter = Cast<AShooterCharacter>(OtherActor);
         if (ShooterCharacter)
         {
-            // ShooterCharacter->SetBuffPickup(this);
             SetBuffState(BuffType);
         }
     }

@@ -169,7 +169,6 @@ void AEnemy::OnAttackSphereBeginOverlap(UPrimitiveComponent *OverlappedComponent
 		if (ShooterCharacter)
 		{
 			bAttack = true;
-			// HandBox1->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 			EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Attack"), bAttack);
 		}
 	}
@@ -183,7 +182,6 @@ void AEnemy::OnAttackSphereEndOverlap(UPrimitiveComponent *OverlappedComponent, 
 		if (ShooterCharacter)
 		{
 			bAttack = false;
-			// HandBox1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			EnemyController->GetBlackboardComponent()->SetValueAsBool(FName("Attack"), bAttack);
 		}
 	}
@@ -214,18 +212,6 @@ void AEnemy::OnHandBox1EndOverlap(UPrimitiveComponent *OverlappedComponent, AAct
 
 void AEnemy::EnemyPatrol()
 {
-	// const FVector WorldPatrolPoint = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint);
-	// const FVector WorldPatrolPoint2 = UKismetMathLibrary::TransformLocation(GetActorTransform(), PatrolPoint2);
-
-	// DrawDebugSphere(GetWorld(), WorldPatrolPoint, 30.f, 8.f, FColor::Cyan, true);
-	// DrawDebugSphere(GetWorld(), WorldPatrolPoint2, 30.f, 8.f, FColor::Blue, true);
-
-	// if (EnemyController)
-	// {
-	// 	EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint"), WorldPatrolPoint);
-	// 	EnemyController->GetBlackboardComponent()->SetValueAsVector(FName("PatrolPoint2"), WorldPatrolPoint2);
-	// }
-	// Code for zombies follow in beginplay;
 	ShooterCharacter = Cast<AShooterCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (ShooterCharacter)
 	{

@@ -151,14 +151,12 @@ void AShooterCharacter::Aim(float DeltaTime)
 	{
 		if (bAim)
 		{
-			// FollowCamera->SetFieldOfView(45.f);
 			CurrentFOV = FMath::FInterpTo(CurrentFOV, EquippedWeapon->GetZoomFOV(), DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
 			StopSprint();
 			bSprint = false;
 		}
 		else
 		{
-			// FollowCamera->SetFieldOfView(90.f);
 			CurrentFOV = FMath::FInterpTo(CurrentFOV, DefaultFOV, DeltaTime, EquippedWeapon->GetZoomInterpSpeed());
 		}
 		FollowCamera->SetFieldOfView(CurrentFOV);
@@ -245,10 +243,6 @@ void AShooterCharacter::CharacterJump()
 
 void AShooterCharacter::Sprint()
 {
-	// if (bUseSprint && GetCharacterMovement())
-	// {
-	// 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
-	// }
 	if (bUseSprint && GetCharacterMovement())
 	{
 		bSprint = !bSprint;
